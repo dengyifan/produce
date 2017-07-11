@@ -5,10 +5,7 @@ import com.yifan.demo.reflect.service.IMetaInfoService;
 import com.yifan.demo.reflect.vo.ColumnMetaInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -26,8 +23,6 @@ public class ExtReflectController {
     @RequestMapping("/init")
     public ModelAndView init(){
         ModelAndView mv = new ModelAndView("hello");
-        mv.addObject("title","标题");
-        mv.addObject("content","Ext 代码生成");
         return mv;
     }
 
@@ -46,6 +41,16 @@ public class ExtReflectController {
         Response response = new Response();
         response.setResult(vo);
         return response;
+    }
+
+    @RequestMapping(value = "/dto",method = RequestMethod.POST)
+    public ModelAndView dto(@RequestBody ColumnMetaInfoVo vo){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("reflect/ground/dto");
+        mv.addObject("columnMetaInfoDtoList",vo.getColumnMetaInfoDtoList());
+        mv.addObject("dtoClassName",vo.getDtoClassName());
+        mv.addObject("packageName",vo.getPackageName());
+        return mv;
     }
 
 

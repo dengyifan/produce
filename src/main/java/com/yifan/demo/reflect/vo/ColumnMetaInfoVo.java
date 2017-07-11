@@ -19,6 +19,12 @@ public class ColumnMetaInfoVo implements Serializable {
 
     private String dtoSignName;
 
+    //Dto 类名 用于 点击 Dto 时使用
+    private String dtoClassName;
+
+    //涉及类时 需要填写包名 这里给一个默认值
+    private String packageName = "com.yifan.demo.reflect.dto";
+
 
     public ColumnMetaInfoDto getColumnMetaInfoDto() {
         return columnMetaInfoDto;
@@ -58,5 +64,21 @@ public class ColumnMetaInfoVo implements Serializable {
 
     public void setDtoSignName(String dtoSignName) {
         this.dtoSignName = dtoSignName;
+    }
+
+    public String getDtoClassName() {
+        return dtoClassName;
+    }
+
+    public void setDtoClassName(String dtoClassName) {
+        this.dtoClassName = dtoClassName;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 }

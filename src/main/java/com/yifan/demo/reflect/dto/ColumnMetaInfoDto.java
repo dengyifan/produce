@@ -16,11 +16,17 @@ public class ColumnMetaInfoDto implements Serializable{
     @FieldMeta(name = "列名")
     private String columnName;
 
+    @FieldMeta(name = "首字母大写列名")
+    private String upperColumnName;
+
     @FieldMeta(name = "类型")
     private String typeName;
 
     @FieldMeta(name = "备注")
     private String remark;
+
+    @FieldMeta(name = "原始备注")
+    private String oldRemark;
 
     public ColumnMetaInfoDto(){}
 
@@ -54,6 +60,19 @@ public class ColumnMetaInfoDto implements Serializable{
         this.remark = remark;
     }
 
+    public String getOldRemark() {
+        return oldRemark;
+    }
 
+    public void setOldRemark(String oldRemark) {
+        this.oldRemark = oldRemark;
+    }
 
+    public String getUpperColumnName() {
+        return upperColumnName;
+    }
+
+    public void setUpperColumnName(String upperColumnName) {
+        this.upperColumnName = upperColumnName;
+    }
 }

@@ -1,5 +1,4 @@
 Ext.define("reflectDemo.view.Viewport", {
-    id : 'metaInfoDemoId',
     extend: "Ext.container.Viewport",
     layout: "border",   //extjs的boder布局
     items: [{

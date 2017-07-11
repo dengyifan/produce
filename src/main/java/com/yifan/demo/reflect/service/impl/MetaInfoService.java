@@ -3,10 +3,16 @@ package com.yifan.demo.reflect.service.impl;
 import com.yifan.demo.base.config.FieldMeta;
 import com.yifan.demo.reflect.dto.ColumnMetaInfoDto;
 import com.yifan.demo.reflect.service.IMetaInfoService;
+import com.yifan.demo.reflect.vo.ColumnMetaInfoVo;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import javax.annotation.Resource;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -24,7 +30,6 @@ public class MetaInfoService implements IMetaInfoService {
 
     @Resource
     private BasicDataSource dataSource;
-
 
     @Override
     public List<ColumnMetaInfoDto> getMetaInfo(String tableName) {
@@ -84,5 +89,11 @@ public class MetaInfoService implements IMetaInfoService {
             e.printStackTrace();
         }
         return dtoList;
+    }
+
+
+    @Override
+    public String ftlParse(String viewName, ColumnMetaInfoVo vo){
+        return null;
     }
 }

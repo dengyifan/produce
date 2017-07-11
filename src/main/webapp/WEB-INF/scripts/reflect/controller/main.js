@@ -8,7 +8,9 @@ Ext.define('reflectDemo.controller.main', {
     views: [
         'Viewport',
         'main.Search',
-        'main.List'
+        'main.List',
+        'dto.view',
+        'model.view'
     ],
     init: function () {
         this.control({
@@ -17,6 +19,15 @@ Ext.define('reflectDemo.controller.main', {
             },
             'reflectDemoGrid button[action = dto]':{
                 click: this.dto
+            },
+            'reflectDemoGrid button[action = model]':{
+                click: this.model
+            },
+            'reflectDemoDtoView button[action = executeDto]':{
+                click: this.executeDto
+            },
+            'reflectDemoModelView button[action = executeModel]':{
+                click: this.executeModel
             }
         });
     },
@@ -38,25 +49,6 @@ Ext.define('reflectDemo.controller.main', {
     dto:function(btn){
         var me = this;
 
-        var queryForm = btn.up('grid').up().down('form');
-        var formData = Ext.create('Ext.data.Model',queryForm.getForm().getValues());
-        var dtoClassName = formData.get('dtoClassName');
-        var packageName = formData.get('packageName');
-
-
-        /*
-        if(Ext.isEmpty(packageName)){
-            me.showErrorMsg('请填写包名');
-            return;
-        }
-        */
-
-
-        if(Ext.isEmpty(dtoClassName)){
-           me.showErrorMsg('请填写 Dto 类名');
-           return;
-        }
-
         var selections = this.getSelected(btn);
         if(selections.length == 0){
             me.showErrorMsg('请选择字段后再操作！');
@@ -64,6 +56,10 @@ Ext.define('reflectDemo.controller.main', {
         }
 
         var metaInfoObjArr = [];
+
+        //是否存在日期类型
+        var containsDate = false;
+
         selections.forEach(function(curObj) {
             var curData = curObj.data;
             var curColumnName = curData['columnName'];
@@ -74,6 +70,9 @@ Ext.define('reflectDemo.controller.main', {
             curRemark = Ext.util.Format.trim(curRemark);
 
             var curTypeName = me.parseDbTypeToJava(curData);
+            if(curTypeName == 'Date'){
+                containsDate = true;
+            }
 
             metaInfoObjArr.push({
                 columnName : curColumnName,
@@ -84,18 +83,104 @@ Ext.define('reflectDemo.controller.main', {
             });
         });
 
+        var win = Ext.create('reflectDemo.view.dto.view',{
+            metaInfoObjArr:metaInfoObjArr,
+            containsDate:containsDate
+        });
+        win.show();
+    },
+    executeDto:function(btn){
+        var me = this;
+
+        var win = btn.up('window');
+        var queryForm = btn.up('window').down('form');
+        var formData = Ext.create('Ext.data.Model',queryForm.getForm().getValues());
+        var dtoClassName = formData.get('dtoClassName');
+        var packageName = formData.get('packageName');
+
+        if(Ext.isEmpty(dtoClassName)){
+           me.showErrorMsg('请填写 Dto 类名');
+           return;
+        }
 
         var url = '../ext/dto';
         var params = {
-            'columnMetaInfoDtoList':metaInfoObjArr,
+            'columnMetaInfoDtoList':win.metaInfoObjArr,
             'dtoClassName':dtoClassName,
-            'packageName':packageName
+            'packageName':packageName,
+            'containsDate':win.containsDate
         };
-        var context = btn.up('grid');
+        var context = btn.up('window');
         me.requestAjax(url,params,context,function(result){
+            if(!Ext.isEmpty(result)){
+                win.close();
+            }
             me.showScriptStr('Dto',result);
         },btn);
 
+    },
+    model:function(btn){
+        var me = this;
+
+        var selections = me.getSelected(btn);
+        if(selections.length == 0){
+            me.showErrorMsg('请选择字段后再操作！');
+            return;
+        }
+
+        var metaInfoObjArr = [];
+
+        //组装 fields 字段内容
+        selections.forEach(function(curObj,idx){
+            var curData = curObj.data;
+
+            //字段名
+            var curColumnName = curData['columnName'];
+
+            //首字母小写
+            curColumnName = me.firstLower(curColumnName);
+
+            //字段注释
+            var curRemark = curData['remark'];
+            curRemark = me.dealRemark(curRemark);
+
+            //类型
+            var curTypeName = me.parseDbTypeToExt(curData);
+
+            metaInfoObjArr.push({
+                columnName : curColumnName,
+                typeName : curTypeName,
+                remark : curRemark
+            });
+        });
+
+        var win = Ext.create('reflectDemo.view.model.view',{
+            metaInfoObjArr:metaInfoObjArr
+        });
+        win.show();
+    },
+    executeModel:function(btn){
+        var me = this;
+
+        var win = btn.up('window');
+        var queryForm = btn.up('window').down('form');
+        var formData = Ext.create('Ext.data.Model',queryForm.getForm().getValues());
+        var modelSignName = formData.get('modelSignName');
+
+        if(Ext.isEmpty(modelSignName)){
+            me.showErrorMsg('Model签名不能为空！');
+            return;
+        }
+
+        var url = '../ext/model';
+        var params = {
+            'columnMetaInfoDtoList':win.metaInfoObjArr,
+            'modelSignName':modelSignName
+        };
+        var context = btn.up('window');
+        me.requestAjax(url,params,context,function(result){
+            me.showScriptStr('Dto',result);
+        },btn);
     },
     showErrorMsg:function(msg){
         Ext.Msg.show({
@@ -176,6 +261,26 @@ Ext.define('reflectDemo.controller.main', {
         }
         return javaType;
 
+    },
+    parseDbTypeToExt:function(curData){
+
+        //字段类型
+        var curTypeName = curData['typeName'];
+
+        var extTypeName = '';
+
+        switch(curTypeName){
+            case 'DATETIME':
+                extTypeName = 'date';
+                break;
+            case 'FLOAT':
+                extTypeName = 'float';
+                break;
+            default:
+                extTypeName = 'string';
+        }
+
+        return extTypeName;
     },
     showScriptStr:function(title,cnt){
         //组装完后 展示到窗口里

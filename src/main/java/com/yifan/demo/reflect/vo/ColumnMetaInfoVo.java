@@ -25,6 +25,12 @@ public class ColumnMetaInfoVo implements Serializable {
     //涉及类时 需要填写包名 这里给一个默认值
     private String packageName = "com.yifan.demo.reflect.dto";
 
+    //Model 签名
+    private String modelSignName;
+
+    //是否存在日期字段
+    private boolean containsDate;
+
 
     public ColumnMetaInfoDto getColumnMetaInfoDto() {
         return columnMetaInfoDto;
@@ -80,5 +86,21 @@ public class ColumnMetaInfoVo implements Serializable {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
+    }
+
+    public String getModelSignName() {
+        return modelSignName;
+    }
+
+    public void setModelSignName(String modelSignName) {
+        this.modelSignName = modelSignName;
+    }
+
+    public boolean isContainsDate() {
+        return containsDate;
+    }
+
+    public void setContainsDate(boolean containsDate) {
+        this.containsDate = containsDate;
     }
 }

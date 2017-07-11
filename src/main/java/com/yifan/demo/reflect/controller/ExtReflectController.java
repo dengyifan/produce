@@ -50,6 +50,16 @@ public class ExtReflectController {
         mv.addObject("columnMetaInfoDtoList",vo.getColumnMetaInfoDtoList());
         mv.addObject("dtoClassName",vo.getDtoClassName());
         mv.addObject("packageName",vo.getPackageName());
+        mv.addObject("containsDate",vo.isContainsDate());
+        return mv;
+    }
+
+    @RequestMapping(value = "/model",method = RequestMethod.POST)
+    public ModelAndView model(@RequestBody ColumnMetaInfoVo vo){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("reflect/ext/model");
+        mv.addObject("columnMetaInfoDtoList",vo.getColumnMetaInfoDtoList());
+        mv.addObject("modelSignName",vo.getModelSignName());
         return mv;
     }
 

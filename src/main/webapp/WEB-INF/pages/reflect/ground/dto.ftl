@@ -4,6 +4,10 @@ import com.yifan.demo.base.config.FieldMeta;
 
 import java.io.Serializable;
 
+<#if containsDate>
+import java.util.Date;
+</#if>
+
 /**
 * Created by dengyin on ${.now}
 */

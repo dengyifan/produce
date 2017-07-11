@@ -12,7 +12,7 @@ Ext.define("reflectDemo.store.main", {
     proxy: {
         type: 'ajax',
         actionMethods: 'get',
-        url: '../table/columnInfo',
+        url: '../ext/meta',
         reader: {
             type: 'json',
             rootProperty: 'result.columnMetaInfoDtoList',

@@ -16,7 +16,7 @@
     <commonsPool>1.6</commonsPool>
     <junitVersion>4.12</junitVersion>
     <servletApiVersion>4.0.0-b05</servletApiVersion>
-    <mysqlDriverVersion>6.0.6</mysqlDriverVersion>
+    <mysqlDriverVersion>5.1.38</mysqlDriverVersion>
     <jackson.version>2.5.0</jackson.version>
     <guavaVersion>21.0</guavaVersion>
     <commonsLangVersion>3.4</commonsLangVersion>

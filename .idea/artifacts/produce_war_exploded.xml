@@ -7,7 +7,7 @@
           <element id="module-output" name="produce" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="Maven: mysql:mysql-connector-java:6.0.6" />
+          <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.38" />
           <element id="library" level="project" name="Maven: org.springframework:spring-beans:4.3.8.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-context:4.3.8.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-context-support:4.3.8.RELEASE" />

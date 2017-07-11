@@ -10,7 +10,11 @@ Ext.define('reflectDemo.controller.main', {
         'main.Search',
         'main.List',
         'dto.view',
-        'model.view'
+        'model.view',
+        'common.window',
+        'search.form',
+        'search.param',
+        'search.view'
     ],
     init: function () {
         this.control({
@@ -19,6 +23,9 @@ Ext.define('reflectDemo.controller.main', {
             },
             'reflectDemoGrid button[action = dto]':{
                 click: this.dto
+            },
+            'reflectDemoGrid button[action = search]':{
+                click: this.search
             },
             'reflectDemoGrid button[action = model]':{
                 click: this.model
@@ -41,10 +48,93 @@ Ext.define('reflectDemo.controller.main', {
         mainGrid.getStore().setQueryForm(queryForm);
         mainGrid.getPagingToolbar().moveFirst();
     },
-    getSelected:function(btn){
-        var mainGrid = btn.up('grid');
-        var selections = mainGrid.getSelectionModel().getSelection();
-        return selections;
+    search:function(btn){
+        var me = this;
+        var selections = this.getSelected(btn);
+        if(selections.length == 0){
+            me.showErrorMsg('请勾选字段后，再操作');
+            return;
+        }
+
+        var columnNameRemarkMap = {};
+
+        var itemArr = [];
+        var curSubItemArr = [];
+        selections.forEach(function(curObj,idx){
+            var curData = curObj.data;
+            var curColumnName = curData['columnName'];
+            curColumnName = me.firstLower(curColumnName);
+
+            var curRemark = curData['remark'];
+            curRemark = me.dealRemark(curRemark);
+
+            //对于没有加字段注释的 默认不实现
+            if(!Ext.isEmpty(curRemark)){
+
+                //将列名 与 注释名 保存起来
+                columnNameRemarkMap[curColumnName] = curRemark;
+
+
+                curSubItemArr.push({
+                    xtype:'combo',
+                    fieldLabel: curRemark,
+                    name: curColumnName,
+                    store:[
+                        ['textfield','textfield'],
+                        ['combo','combo'],
+                        ['numberfield','numberfield'],
+                        ['datefield','datefield']
+                    ],
+                    value:'textfield',
+                    editable:false
+                });
+
+
+                if((idx + 1) % 6 == 0){
+                    itemArr.push({
+                        layout:'column',
+                        defaults : {
+                            labelAlign : "right",
+                            margin:'5',
+                            labelWidth:100,
+                            width:200
+                        },
+                        items:curSubItemArr
+                    });
+
+                    curSubItemArr = [];
+                }
+            }
+
+        });
+
+        //补充剩下的字段
+        if(curSubItemArr.length > 0){
+            itemArr.push({
+                layout:'column',
+                defaults : {
+                    labelAlign : "right",
+                    margin:'5',
+                    labelWidth:100,
+                    width:200
+                },
+                items:curSubItemArr
+            });
+            curSubItemArr = [];
+        }
+
+        var win = Ext.create('reflectDemo.view.search.view',{
+            items:[
+                {
+                    xtype : 'reflectDemoViewSearchForm',
+                    title : '类型选择',
+                    items:itemArr
+                }
+
+            ],
+            columnNameRemarkMap:columnNameRemarkMap
+        });
+        win.show();
     },
     dto:function(btn){
         var me = this;
@@ -181,6 +271,11 @@ Ext.define('reflectDemo.controller.main', {
         me.requestAjax(url,params,context,function(result){
             me.showScriptStr('Dto',result);
         },btn);
+    },
+    getSelected:function(btn){
+        var mainGrid = btn.up('grid');
+        var selections = mainGrid.getSelectionModel().getSelection();
+        return selections;
     },
     showErrorMsg:function(msg){
         Ext.Msg.show({

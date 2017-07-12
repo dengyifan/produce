@@ -64,6 +64,17 @@ public class ExtReflectController {
     }
 
 
+    @RequestMapping(value = "/searchCode",method = RequestMethod.POST)
+    public ModelAndView searchCode(@RequestBody ColumnMetaInfoVo vo){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("reflect/ext/search");
+        mv.addObject("extFormFieldDtoList",vo.getExtFormFieldDtoList());
+        mv.addObject("searchSignName",vo.getSearchSignName());
+        mv.addObject("searchAlignName",vo.getSearchAlignName());
+        return mv;
+    }
+
+
     public ColumnMetaInfoVo getVo() {
         return vo;
     }

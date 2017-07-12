@@ -1,6 +1,7 @@
 package com.yifan.demo.reflect.vo;
 
 import com.yifan.demo.reflect.dto.ColumnMetaInfoDto;
+import com.yifan.demo.reflect.dto.ExtFormFieldDto;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,6 +14,11 @@ public class ColumnMetaInfoVo implements Serializable {
 
     private ColumnMetaInfoDto columnMetaInfoDto;
     private List<ColumnMetaInfoDto> columnMetaInfoDtoList;
+
+
+    private String searchSignName;
+    private String searchAlignName;
+    private List<ExtFormFieldDto> extFormFieldDtoList;
 
     private int totalCount;
     private String tableName;
@@ -102,5 +108,29 @@ public class ColumnMetaInfoVo implements Serializable {
 
     public void setContainsDate(boolean containsDate) {
         this.containsDate = containsDate;
+    }
+
+    public List<ExtFormFieldDto> getExtFormFieldDtoList() {
+        return extFormFieldDtoList;
+    }
+
+    public void setExtFormFieldDtoList(List<ExtFormFieldDto> extFormFieldDtoList) {
+        this.extFormFieldDtoList = extFormFieldDtoList;
+    }
+
+    public String getSearchSignName() {
+        return searchSignName;
+    }
+
+    public void setSearchSignName(String searchSignName) {
+        this.searchSignName = searchSignName;
+    }
+
+    public String getSearchAlignName() {
+        return searchAlignName;
+    }
+
+    public void setSearchAlignName(String searchAlignName) {
+        this.searchAlignName = searchAlignName;
     }
 }

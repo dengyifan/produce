@@ -35,6 +35,15 @@ Ext.define('reflectDemo.controller.main', {
             },
             'reflectDemoModelView button[action = executeModel]':{
                 click: this.executeModel
+            },
+            'reflectDemoViewSearchForm button[action = searchPreview]':{
+                click:this.searchPreview
+            },
+            'reflectDemoViewSearchForm button[action = searchCode]':{
+                click:this.searchCode
+            },
+            'reflectDemoViewSearchForm button[action = params]':{
+
             }
         });
     },
@@ -124,17 +133,77 @@ Ext.define('reflectDemo.controller.main', {
         }
 
         var win = Ext.create('reflectDemo.view.search.view',{
+            title : '类型选择',
             items:[
                 {
                     xtype : 'reflectDemoViewSearchForm',
-                    title : '类型选择',
                     items:itemArr
                 }
-
             ],
             columnNameRemarkMap:columnNameRemarkMap
         });
         win.show();
+    },
+    searchCode:function(btn,previewFunc){
+        var me = this;
+        var curForm = btn.up('form');
+        var formData = Ext.create('Ext.data.Model',curForm.getForm().getValues());
+        var columnMeta = formData.data;
+
+        //取出 win 里，在上一步里传递的数据对象
+        var columnNameRemarkMap = curForm.up().columnNameRemarkMap;
+
+        var formFieldArr = [];
+        for(var key in columnMeta){
+
+            if(!Ext.isEmpty(columnNameRemarkMap[key])){
+                var curXtype = columnMeta[key];
+                var curFieldLabel = columnNameRemarkMap[key];
+                var curName = key;
+
+                formFieldArr.push({
+                    xtype:curXtype,
+                    fieldLabel:curFieldLabel,
+                    name:curName
+                });
+            }
+        }
+
+        var searchSignName = 'aa.bb.cc';
+        var searchAlignName = 'aaBBcc';
+        var url = '../ext/searchCode';
+        var params = {
+            'extFormFieldDtoList':formFieldArr,
+            'searchSignName':searchSignName,
+            'searchAlignName':searchAlignName
+        };
+        var context = btn.up('form');
+        me.requestAjax(url,params,context,function(result){
+            if(previewFunc instanceof Function){
+                previewFunc.apply(context,[result,searchSignName]);
+            } else {
+                me.showScriptStr('Search',result);
+            }
+        },btn);
+
+    },
+    searchPreview:function(btn){
+        var me = this;
+        me.searchCode(btn,function(result,searchSignName){
+
+            eval(result);
+            var win = Ext.create('Ext.window.Window',{
+                title:'预览',
+                width: document.documentElement.clientWidth-10,
+                height: document.documentElement.clientHeight- 100,
+                layout : "fit",
+                modal : true,
+                items : [
+                    Ext.create(searchSignName)
+                ]
+            });
+            win.show();
+        });
     },
     dto:function(btn){
         var me = this;

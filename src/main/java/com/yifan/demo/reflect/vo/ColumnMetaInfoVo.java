@@ -20,6 +20,9 @@ public class ColumnMetaInfoVo implements Serializable {
     private String searchAlignName;
     private List<ExtFormFieldDto> extFormFieldDtoList;
 
+    private String gridSignName;
+    private String gridAlignName;
+
     private int totalCount;
     private String tableName;
 
@@ -132,5 +135,21 @@ public class ColumnMetaInfoVo implements Serializable {
 
     public void setSearchAlignName(String searchAlignName) {
         this.searchAlignName = searchAlignName;
+    }
+
+    public String getGridSignName() {
+        return gridSignName;
+    }
+
+    public void setGridSignName(String gridSignName) {
+        this.gridSignName = gridSignName;
+    }
+
+    public String getGridAlignName() {
+        return gridAlignName;
+    }
+
+    public void setGridAlignName(String gridAlignName) {
+        this.gridAlignName = gridAlignName;
     }
 }

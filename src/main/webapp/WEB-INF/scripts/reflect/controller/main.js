@@ -15,7 +15,8 @@ Ext.define('reflectDemo.controller.main', {
         'search.form',
         'search.param',
         'search.view',
-        'search.name'
+        'search.name',
+        'grid.view'
     ],
     init: function () {
         this.control({
@@ -27,6 +28,9 @@ Ext.define('reflectDemo.controller.main', {
             },
             'reflectDemoGrid button[action = search]':{
                 click: this.search
+            },
+            'reflectDemoGrid button[action = grid]':{
+                click: this.grid
             },
             'reflectDemoGrid button[action = model]':{
                 click: this.model
@@ -48,6 +52,9 @@ Ext.define('reflectDemo.controller.main', {
             },
             'reflectDemoSearchParam textfield[name = voColumnName]':{
                 change:this.voColumnChangeResponse
+            },
+            'reflectDemoGridView button[action = executeGrid]':{
+                click:this.executeGrid
             }
         });
     },
@@ -190,9 +197,6 @@ Ext.define('reflectDemo.controller.main', {
             }
         }
 
-
-
-
         var url = '../ext/searchCode';
         var params = {
             'extFormFieldDtoList':formFieldArr,
@@ -233,7 +237,7 @@ Ext.define('reflectDemo.controller.main', {
         });
         tmpWin.show();
     },
-    voColumnChangeResponse:function(self,event,eOpts){ //param 界面里 文本框输入改变事件响应
+    voColumnChangeResponse:function(self){ //param 界面里 文本框输入改变事件响应
         var me = this;
         var attrPrefix = Ext.isEmpty(self.getValue()) ? 'vo.dto.' : self.getValue();
 
@@ -268,6 +272,102 @@ Ext.define('reflectDemo.controller.main', {
         var paramStrObj = self.up('form').getForm().findField('paramStr');
         paramStrObj.setValue();
         paramStrObj.setValue(str);
+    },
+    grid:function(btn){
+        var me = this;
+        var selections = this.getSelected(btn);
+        if(selections.length == 0){
+            me.showErrorMsg('请勾选字段后，再操作');
+            return;
+        }
+
+        var columnArr = [];
+        selections.forEach(function(curObj){
+            var curData = curObj.data;
+
+            var curColumnName = curData['columnName'];
+            curColumnName = me.firstLower(curColumnName);
+
+            var curRemark = curData['remark'];
+            curRemark = me.dealRemark(curRemark);
+            curRemark = Ext.util.Format.trim(curRemark);
+
+            var curTypeName = curData['typeName'];
+
+            if(!Ext.isEmpty(curRemark)){
+                columnArr.push({
+                    columnName : curColumnName,
+                    typeName : curTypeName,
+                    remark : curRemark
+                });
+            }
+        });
+
+        var win = Ext.create('reflectDemo.view.grid.view',{
+            columnArr:columnArr
+        });
+
+        win.show();
+
+    },
+    executeGrid:function(btn){
+
+        var me = this;
+
+        var win = btn.up('window');
+        var form = win.down('form');
+
+        var formData = Ext.create('Ext.data.Model',form.getForm().getValues());
+
+        var gridSignName = formData.get('gridSignName');
+        var gridAlignName = formData.get('gridAlignName');
+
+        gridSignName = Ext.isEmpty(gridSignName) ? 'aa.bb.view.list' :gridSignName;
+        gridAlignName = Ext.isEmpty(gridAlignName) ? 'aaBbViewList' :gridAlignName;
+
+
+        var url = '../ext/grid';
+        var params = {
+            'columnMetaInfoDtoList':win.columnArr,
+            'gridSignName':gridSignName,
+            'gridAlignName':gridAlignName
+        };
+        var context = btn.up('form');
+        me.requestAjax(url,params,context,function(result){
+
+            if(!Ext.isEmpty(result)){
+
+                win.close();
+
+                eval(result);
+
+                //创建一个 window 来展示
+                var tmpWindow = Ext.create('Ext.window.Window',{
+                    title:'Grid预览',
+                    width: document.documentElement.clientWidth-10,
+                    height: document.documentElement.clientHeight - 100,
+                    items: [{
+                        xtype : 'form',
+                        height:(document.documentElement.clientHeight - 100) / 2,
+                        width:'100%',
+                        items:[
+                            {
+                                xtype:'textareafield',
+                                value: result,
+                                height:'100%',
+                                width:'100%',
+                            }
+                        ]
+                    }, Ext.create(gridSignName,{
+                        width:'100%',
+                        height:(document.documentElement.clientHeight - 100) / 2
+                    })]
+                });
+
+                tmpWindow.show();
+            }
+
+        },btn);
     },
     dto:function(btn){
         var me = this;

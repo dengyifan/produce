@@ -75,6 +75,16 @@ public class ExtReflectController {
     }
 
 
+    @RequestMapping(value = "/grid",method = RequestMethod.POST)
+    public ModelAndView grid(@RequestBody ColumnMetaInfoVo vo){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("reflect/ext/grid");
+        mv.addObject("columnMetaInfoDtoList",vo.getColumnMetaInfoDtoList());
+        mv.addObject("gridSignName",vo.getGridSignName());
+        mv.addObject("gridAlignName",vo.getGridAlignName());
+        return mv;
+    }
+
     public ColumnMetaInfoVo getVo() {
         return vo;
     }

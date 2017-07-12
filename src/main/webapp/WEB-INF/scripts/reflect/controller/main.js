@@ -533,7 +533,7 @@ Ext.define('reflectDemo.controller.main', {
             me.showScriptStr('Dto',result);
         },btn);
     },
-    selectSql:function(btn){
+    sqlCommon:function(btn,url,title){
         var me = this;
 
         //获取表单输入的 表名
@@ -547,7 +547,6 @@ Ext.define('reflectDemo.controller.main', {
             me.showErrorMsg('请勾选字段后，再操作');
             return;
         }
-
 
         var columnArr = [];
         selections.forEach(function(curObj) {
@@ -574,21 +573,42 @@ Ext.define('reflectDemo.controller.main', {
             });
         });
 
-
-        var url = '../ext/selectSql';
         var params = {
             'columnMetaInfoDtoList':columnArr,
             'tableName':tableName
         };
 
-
         me.requestAjax(url,params,form,function(result){
-            me.showScriptStr('Dto',result);
+            me.showScriptStr(title,result);
         },btn);
     },
-    insertSql:function(btn){},
-    updateSql:function(btn){},
-    introduce:function(btn){},
+
+    selectSql:function(btn){
+        var me = this;
+        var url = '../ext/selectSql';
+        me.sqlCommon(btn,url,'SelectSql');
+    },
+    insertSql:function(btn){
+        var me = this;
+        var url = '../ext/insertSql';
+        me.sqlCommon(btn,url,'InsertSql');
+    },
+    updateSql:function(btn){
+        var me = this;
+        var url = '../ext/updateSql';
+        me.sqlCommon(btn,url,'UpdateSql');
+    },
+    introduce:function(btn){
+        var me = this;
+
+        var str = me.dealPreSubfix(0,"注意事项：");
+        str += me.dealPreSubfix(0,"1、没有注释的字段不会处理");
+        str += me.dealPreSubfix(0,"2、表注释时 需要为其添加编码说明的 需要回车换行再写 ");
+        str += me.dealPreSubfix(0,"3、字段名为多单词时，请使用驼峰式命名 ");
+        str += me.dealPreSubfix(0,"4、当输入为 Dto 类名时，为了更好地获取注释 请使用 @FieldMeta 注解 ");
+
+        me.showScriptStr('说明',str);
+    },
     getSelected:function(btn){
         var mainGrid = btn.up('grid');
         var selections = mainGrid.getSelectionModel().getSelection();

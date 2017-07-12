@@ -108,6 +108,24 @@ public class ExtReflectController {
         return mv;
     }
 
+    @RequestMapping(value = "/insertSql",method = RequestMethod.POST)
+    public ModelAndView insertSql(@RequestBody ColumnMetaInfoVo vo){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("reflect/ground/insert");
+        mv.addObject("columnMetaInfoDtoList",vo.getColumnMetaInfoDtoList());
+        mv.addObject("tableName",vo.getTableName());
+        return mv;
+    }
+
+    @RequestMapping(value = "/updateSql",method = RequestMethod.POST)
+    public ModelAndView updateSql(@RequestBody ColumnMetaInfoVo vo){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("reflect/ground/update");
+        mv.addObject("columnMetaInfoDtoList",vo.getColumnMetaInfoDtoList());
+        mv.addObject("tableName",vo.getTableName());
+        return mv;
+    }
+
 
     public ColumnMetaInfoVo getVo() {
         return vo;

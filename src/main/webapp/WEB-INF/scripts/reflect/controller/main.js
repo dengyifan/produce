@@ -44,7 +44,10 @@ Ext.define('reflectDemo.controller.main', {
                 click:this.searchCode
             },
             'reflectDemoViewSearchForm button[action = params]':{
-
+                click:this.params
+            },
+            'reflectDemoSearchParam textfield[name = voColumnName]':{
+                change:this.voColumnChangeResponse
             }
         });
     },
@@ -223,6 +226,48 @@ Ext.define('reflectDemo.controller.main', {
             });
             win.show();
         });
+    },
+    params:function(btn){
+        var tmpWin = Ext.create('reflectDemo.view.search.param',{
+            paramBtn:btn
+        });
+        tmpWin.show();
+    },
+    voColumnChangeResponse:function(self,event,eOpts){ //param 界面里 文本框输入改变事件响应
+        var me = this;
+        var attrPrefix = Ext.isEmpty(self.getValue()) ? 'vo.dto.' : self.getValue();
+
+        //获取 点击的 param 按钮
+        var btn = self.up('form').up().paramBtn;
+
+        var curForm = btn.up('form');
+        var formData = Ext.create('Ext.data.Model',curForm.getForm().getValues());
+        var columnMeta = formData.data;
+
+        //取出 win 里，在上一步里传递的数据对象
+        var columnNameRemarkMap = curForm.up().columnNameRemarkMap;
+
+
+        var str = me.dealPreSubfix(0,"var queryForm = store.queryForm;");
+
+        str += me.dealPreSubfix(0,"");
+        str += me.dealPreSubfix(0,"//获取表单各项的值");
+        str += me.dealPreSubfix(0,"var formData = Ext.create('Ext.data.Model',queryForm.getForm().getValues());");
+        str += me.dealPreSubfix(0,"var params = {");
+
+        for(var key in columnMeta){
+            if(!Ext.isEmpty(columnNameRemarkMap[key])){
+                str += me.dealPreSubfix(1,"'"+ attrPrefix + key +"':" + "formData.get('"+key+"')," + columnNameRemarkMap[key]);
+            }
+        }
+
+        str += me.dealPreSubfix(0,"};");
+        str += me.dealPreSubfix(0,"");
+        str += me.dealPreSubfix(0,"Ext.apply(store.proxy.extraParams,params);");
+
+        var paramStrObj = self.up('form').getForm().findField('paramStr');
+        paramStrObj.setValue();
+        paramStrObj.setValue(str);
     },
     dto:function(btn){
         var me = this;
@@ -476,5 +521,25 @@ Ext.define('reflectDemo.controller.main', {
         sqlCntObj.setValue(cnt);
 
         win.show();
+    },
+    dealPreSubfix:function(count,str){
+        if(Ext.isEmpty(str)){
+            return this.getLineDownFlag();
+        }
+        return this.getDefineTab(count) + str + this.getLineDownFlag();
+    },
+    getLineDownFlag:function(){//换行
+        return "\r\n";
+    },
+    getDefineTab:function(count){
+
+        if(count == 0) return "";
+
+        var str = "";
+        while(count != 0){
+            str += "    ";
+            count --;
+        }
+        return str;
     }
 });

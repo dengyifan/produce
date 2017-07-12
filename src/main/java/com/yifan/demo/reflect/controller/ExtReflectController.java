@@ -97,6 +97,18 @@ public class ExtReflectController {
         return mv;
     }
 
+
+
+    @RequestMapping(value = "/selectSql",method = RequestMethod.POST)
+    public ModelAndView selectSql(@RequestBody ColumnMetaInfoVo vo){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("reflect/ground/select");
+        mv.addObject("columnMetaInfoDtoList",vo.getColumnMetaInfoDtoList());
+        mv.addObject("tableName",vo.getTableName());
+        return mv;
+    }
+
+
     public ColumnMetaInfoVo getVo() {
         return vo;
     }

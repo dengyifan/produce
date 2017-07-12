@@ -55,7 +55,20 @@ Ext.define('reflectDemo.controller.main', {
             },
             'reflectDemoGridView button[action = executeGrid]':{
                 click:this.executeGrid
+            },
+            'reflectDemoGrid button[action = selectSql]':{
+                click: this.selectSql
+            },
+            'reflectDemoGrid button[action = insertSql]':{
+                click: this.insertSql
+            },
+            'reflectDemoGrid button[action = updateSql]':{
+                click: this.updateSql
+            },
+            'reflectDemoGrid button[action = introduce]':{
+                click: this.introduce
             }
+
         });
     },
     mainQuery:function (btn) {
@@ -440,10 +453,8 @@ Ext.define('reflectDemo.controller.main', {
         var dtoClassName = formData.get('dtoClassName');
         var packageName = formData.get('packageName');
 
-        if(Ext.isEmpty(dtoClassName)){
-           me.showErrorMsg('请填写 Dto 类名');
-           return;
-        }
+        dtoClassName = Ext.isEmpty(dtoClassName) ? 'TODO_DtoClassName' : dtoClassName;
+        packageName = Ext.isEmpty(packageName) ? 'TODO_PackageName' : packageName;
 
         var url = '../ext/dto';
         var params = {
@@ -509,10 +520,8 @@ Ext.define('reflectDemo.controller.main', {
         var formData = Ext.create('Ext.data.Model',queryForm.getForm().getValues());
         var modelSignName = formData.get('modelSignName');
 
-        if(Ext.isEmpty(modelSignName)){
-            me.showErrorMsg('Model签名不能为空！');
-            return;
-        }
+
+        modelSignName = Ext.isEmpty(modelSignName) ? 'TODO_modelSignName' : modelSignName;
 
         var url = '../ext/model';
         var params = {
@@ -524,6 +533,62 @@ Ext.define('reflectDemo.controller.main', {
             me.showScriptStr('Dto',result);
         },btn);
     },
+    selectSql:function(btn){
+        var me = this;
+
+        //获取表单输入的 表名
+        var form = this.getFormByGridBtn(btn);
+        var tableName = form.getForm().findField('tableName').getValue();
+
+        //获取Grid里选择的字段集合
+        var selections = this.getSelected(btn);
+
+        if(selections.length == 0){
+            me.showErrorMsg('请勾选字段后，再操作');
+            return;
+        }
+
+
+        var columnArr = [];
+        selections.forEach(function(curObj) {
+            var curData = curObj.data;
+            var curColumnName = curData['columnName'];
+            curColumnName = me.firstLower(curColumnName);
+
+            var curRemark = curData['remark'];
+            curRemark = me.dealRemark(curRemark);
+
+            var curTypeName = curData['typeName'];
+            switch (curTypeName){
+                case 'DATETIME':
+                    curTypeName = 'TIMESTAMP';
+                    break;
+                default:
+                    curTypeName = 'VARCHAR';
+            }
+
+            columnArr.push({
+                columnName:curColumnName,
+                typeName:curTypeName,
+                remark:curRemark
+            });
+        });
+
+
+        var url = '../ext/selectSql';
+        var params = {
+            'columnMetaInfoDtoList':columnArr,
+            'tableName':tableName
+        };
+
+
+        me.requestAjax(url,params,form,function(result){
+            me.showScriptStr('Dto',result);
+        },btn);
+    },
+    insertSql:function(btn){},
+    updateSql:function(btn){},
+    introduce:function(btn){},
     getSelected:function(btn){
         var mainGrid = btn.up('grid');
         var selections = mainGrid.getSelectionModel().getSelection();
@@ -660,5 +725,9 @@ Ext.define('reflectDemo.controller.main', {
             count --;
         }
         return str;
-    }
+    },
+    getFormByGridBtn:function(btn){ //当点击 grid 上的 btn 时，获取到整个页面的 form 对象
+        var form = btn.up('grid').up().down('form');
+        return form;
+    },
 });

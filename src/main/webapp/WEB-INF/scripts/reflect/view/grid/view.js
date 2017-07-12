@@ -43,6 +43,7 @@ Ext.define("reflectDemo.view.grid.view", {
                 },
                 {
                     layout : 'column',
+                    title:'展示顺序设置',
                     defaultType : 'textfield',
                     autoScroll:true,
                     defaults:{

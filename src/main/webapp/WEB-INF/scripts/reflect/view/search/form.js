@@ -4,15 +4,14 @@
 Ext.define("reflectDemo.view.search.form", {
     extend:'Ext.form.Panel',
     alias: 'widget.reflectDemoViewSearchForm',
-    frame:true,
-    header:false,//用于屏蔽掉 标题栏
+    title:'字段标签选择',
     collapsible:false,
     region:'north',
     defaults:{
         labelWidth:70,
         labelAlign:'right'
     },
-    height:'100%',
+    height:'80%',
     autoScroll:true,
     dockedItems:[{
         xtype:'toolbar',

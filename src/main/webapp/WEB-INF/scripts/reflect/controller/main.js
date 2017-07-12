@@ -14,7 +14,8 @@ Ext.define('reflectDemo.controller.main', {
         'common.window',
         'search.form',
         'search.param',
-        'search.view'
+        'search.view',
+        'search.name'
     ],
     init: function () {
         this.control({
@@ -69,6 +70,7 @@ Ext.define('reflectDemo.controller.main', {
 
         var itemArr = [];
         var curSubItemArr = [];
+
         selections.forEach(function(curObj,idx){
             var curData = curObj.data;
             var curColumnName = curData['columnName'];
@@ -134,10 +136,16 @@ Ext.define('reflectDemo.controller.main', {
 
         var win = Ext.create('reflectDemo.view.search.view',{
             title : '类型选择',
+            defaults:{
+                margin:10
+            },
             items:[
                 {
+                    xtype:'reflectDemoViewSearchName'
+                },
+                {
                     xtype : 'reflectDemoViewSearchForm',
-                    items:itemArr
+                    items : itemArr
                 }
             ],
             columnNameRemarkMap:columnNameRemarkMap
@@ -146,6 +154,16 @@ Ext.define('reflectDemo.controller.main', {
     },
     searchCode:function(btn,previewFunc){
         var me = this;
+
+        var nameForm = btn.up('window').down('form');
+        var nameFormData = Ext.create('Ext.data.Model',nameForm.getForm().getValues());
+        var searchSignName = nameFormData.get('searchSignName');
+        var searchAlignName = nameFormData.get('searchAlignName');
+
+        //给个默认值
+        searchSignName = Ext.isEmpty(searchSignName) ? 'aa.bb.form.cc':searchSignName;
+        searchAlignName = Ext.isEmpty(searchAlignName) ? 'aaBbFormCc':searchAlignName;
+
         var curForm = btn.up('form');
         var formData = Ext.create('Ext.data.Model',curForm.getForm().getValues());
         var columnMeta = formData.data;
@@ -169,8 +187,9 @@ Ext.define('reflectDemo.controller.main', {
             }
         }
 
-        var searchSignName = 'aa.bb.cc';
-        var searchAlignName = 'aaBBcc';
+
+
+
         var url = '../ext/searchCode';
         var params = {
             'extFormFieldDtoList':formFieldArr,

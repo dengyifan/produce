@@ -282,6 +282,7 @@ Ext.define('reflectDemo.controller.main', {
         }
 
         var columnArr = [];
+        var fieldOrderArr = [];
         selections.forEach(function(curObj){
             var curData = curObj.data;
 
@@ -300,11 +301,23 @@ Ext.define('reflectDemo.controller.main', {
                     typeName : curTypeName,
                     remark : curRemark
                 });
+
+
+                var curFieldObj = Ext.widget('textfield',{
+                    fieldLabel:curRemark,
+                    xtype :'numberfield',
+                    minValue:1,
+                    value:60,
+                    name : curColumnName
+                });
+
+                fieldOrderArr.push(curFieldObj);
             }
         });
 
         var win = Ext.create('reflectDemo.view.grid.view',{
-            columnArr:columnArr
+            columnArr:columnArr,
+            fieldOrderArr:fieldOrderArr
         });
 
         win.show();
@@ -326,9 +339,15 @@ Ext.define('reflectDemo.controller.main', {
         gridAlignName = Ext.isEmpty(gridAlignName) ? 'aaBbViewList' :gridAlignName;
 
 
+        var columnArr = win.columnArr;
+        columnArr.forEach(function(curData){
+            var columnName = curData['columnName'];
+            curData['order'] = formData.get(columnName);
+        });
+
         var url = '../ext/grid';
         var params = {
-            'columnMetaInfoDtoList':win.columnArr,
+            'columnMetaInfoDtoList':columnArr,
             'gridSignName':gridSignName,
             'gridAlignName':gridAlignName
         };

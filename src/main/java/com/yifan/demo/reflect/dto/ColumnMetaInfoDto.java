@@ -28,6 +28,9 @@ public class ColumnMetaInfoDto implements Serializable{
     @FieldMeta(name = "原始备注")
     private String oldRemark;
 
+    @FieldMeta(name = "展示顺序")
+    private int order;
+
     public ColumnMetaInfoDto(){}
 
     public ColumnMetaInfoDto(String columnName, String typeName,String remark) {
@@ -74,5 +77,13 @@ public class ColumnMetaInfoDto implements Serializable{
 
     public void setUpperColumnName(String upperColumnName) {
         this.upperColumnName = upperColumnName;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 }

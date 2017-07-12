@@ -530,7 +530,7 @@ Ext.define('reflectDemo.controller.main', {
         };
         var context = btn.up('window');
         me.requestAjax(url,params,context,function(result){
-            me.showScriptStr('Dto',result);
+            me.showScriptStr('Model',result);
         },btn);
     },
     sqlCommon:function(btn,url,title){

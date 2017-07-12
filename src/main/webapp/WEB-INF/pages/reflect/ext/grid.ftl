@@ -25,7 +25,7 @@ Ext.define('${gridSignName}', {
                 text:'${meta.remark}',
                 width:80,
                 dataIndex:'${meta.columnName}'
-            },
+            }<#if !meta?is_last>,</#if>
             </#list>
 
         ]

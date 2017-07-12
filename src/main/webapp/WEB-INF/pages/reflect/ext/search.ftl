@@ -18,9 +18,9 @@ Ext.define("${searchSignName}", {
         <#list extFormFieldDtoList as field>
         {
             fieldLabel : '${field.fieldLabel}',
-            name : '${field.name}'<#if field.xtype != 'textfield'>,</#if>
-            <#if field.xtype != 'textfield'>xtype : '${field.xtype}'</#if>
-        },
+            name : '${field.name}',
+            xtype : '${field.xtype}'
+        }<#if !field?is_last>,</#if>
         </#list>
     ],
     buttons : [{

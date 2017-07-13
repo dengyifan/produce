@@ -5,6 +5,7 @@ Ext.define("reflectDemo.view.main.Search", {
     extend : "Ext.form.Panel",
     alias : 'widget.reflectDemoSearch',
     region : 'north',
+    title:'查询',
     height:120,
     fieldDefaults: {
         labelWidth: 80,
@@ -17,7 +18,6 @@ Ext.define("reflectDemo.view.main.Search", {
         var me = this,
             cfg = Ext.apply({}, config);
         me.items = [{
-            title:'查询',
             layout : 'column',
             defaultType : 'textfield',
             items : [

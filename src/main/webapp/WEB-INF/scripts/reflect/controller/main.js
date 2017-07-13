@@ -16,7 +16,8 @@ Ext.define('reflectDemo.controller.main', {
         'search.param',
         'search.view',
         'search.name',
-        'grid.view'
+        'grid.view',
+        'onestep.first'
     ],
     init: function () {
         this.control({
@@ -67,6 +68,12 @@ Ext.define('reflectDemo.controller.main', {
             },
             'reflectDemoGrid button[action = introduce]':{
                 click: this.introduce
+            },
+            'reflectDemoGrid button[action = oneStep]':{
+                click: this.oneStep
+            },
+            'reflectDemoOneStepFirst button[action = toSecond]':{
+                click: this.toSecond
             }
 
         });
@@ -582,7 +589,6 @@ Ext.define('reflectDemo.controller.main', {
             me.showScriptStr(title,result);
         },btn);
     },
-
     selectSql:function(btn){
         var me = this;
         var url = '../ext/selectSql';
@@ -597,6 +603,105 @@ Ext.define('reflectDemo.controller.main', {
         var me = this;
         var url = '../ext/updateSql';
         me.sqlCommon(btn,url,'UpdateSql');
+    },
+    oneStep:function(btn){
+        var win = Ext.create('reflectDemo.view.onestep.first');
+        win.show();
+    },
+    toSecond:function(btn){
+        var me = this;
+        var form = btn.up('window').down('form');
+        var firstStepFormData = Ext.create('Ext.data.Model',form.getForm().getValues());
+
+        btn.up('window').close();
+
+        var secondWin = me.getFieldSelectorWin('第二步:选择查询字段',function(){
+            console.log('--3--');
+            me.toThird(this);
+        },{
+            firstStepFormData:firstStepFormData
+        });
+        secondWin.show();
+    },
+    toThird:function(btn){
+        var me = this;
+
+        var secondWin = btn.up('window');
+        console.log('获取第一步表单填写的数据:');
+        console.log(secondWin.firstStepFormData);
+
+        var secondGrid = secondWin.down('grid');
+        var secondSelectionDataArr = secondGrid.getSelectionModel().getSelection();
+
+        console.log('获取第二步选择的字段:');
+        console.log(secondSelectionDataArr);
+
+        var thirdWindow = me.getFieldSelectorWin('第三步:选择结果列表字段',function(){
+            console.log('--4--');
+            me.toFourth(this);
+        },{
+            firstStepFormData:secondWin.firstStepFormData,
+            secondSelectionDataArr:secondSelectionDataArr
+        });
+
+        secondWin.close();
+
+        thirdWindow.show();
+    },
+    toFourth:function(btn){
+        console.log('--5--');
+
+        var thirdWindow = btn.up('window');
+        var thirdGrid = thirdWindow.down('grid');
+        var thirdSelectionDataArr = thirdGrid.getSelectionModel().getSelection();
+
+        console.log('===1===');
+        console.log(thirdWindow.firstStepFormData);
+
+        console.log('===2===');
+        console.log(thirdWindow.secondSelectionDataArr);
+
+
+        console.log('===3===');
+        console.log(thirdSelectionDataArr);
+
+        thirdWindow.close();
+
+    },
+    getFieldSelectorWin:function(winTitle,nextFunc,cfg){
+
+        var secondForm = Ext.create('reflectDemo.view.main.Search',{title:null});
+        var store = Ext.create('reflectDemo.store.main');
+        store.setQueryForm(secondForm);
+
+        var grid = Ext.create('reflectDemo.view.main.List',{
+            selModel: Ext.create('Ext.selection.CheckboxModel'),//这个也要重新创建 否则会影响主界面同样的功能
+            store:store,
+            dockedItems:[],
+            width:'100%',
+            height:450
+        });
+
+        //动态创建时 一定要设置这一步 不然 会在 store 里报 queryForm 为空
+        grid.getPagingToolbar().store = store;
+
+        var win = Ext.create('Ext.window.Window',{
+            title:winTitle,
+            width:500,
+            height:500,
+            items:[
+                secondForm,
+                grid
+            ],
+            buttons : [{
+                text : '下一步',
+                handler:nextFunc
+            }]
+        });
+
+        cfg = Ext.apply({}, cfg);
+        win = Ext.apply(win,cfg);
+        return win;
     },
     introduce:function(btn){
         var me = this;

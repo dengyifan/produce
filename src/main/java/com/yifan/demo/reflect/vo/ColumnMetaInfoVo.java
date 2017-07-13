@@ -13,12 +13,38 @@ public class ColumnMetaInfoVo implements Serializable {
     private static final long serialVersionUID = -3447783997870999051L;
 
     private ColumnMetaInfoDto columnMetaInfoDto;
+
+    //应用模块名
+    private String appModuleName;
+
+    //应用名
+    private String appSignName;
+
+    //controller 默认文件名
+    private String defaultControllerName;
+
+    //model 默认文件名
+    private String defaultModelName;
+
+    //store 默认文件名
+    private String defaultStoreName;
+
+
+    //store 请求 url
+    private String storeProxyUrl;
+
+    //store 响应数据属性名 默认 mainDtoList;
+    private String storeProxyRootProperty;
+
+    //查询条件字段集合
+    private List<ExtFormFieldDto> extFormFieldDtoList;
+
+    //查询结果字段集合
     private List<ColumnMetaInfoDto> columnMetaInfoDtoList;
 
 
     private String searchSignName;
     private String searchAlignName;
-    private List<ExtFormFieldDto> extFormFieldDtoList;
 
     private String gridSignName;
     private String gridAlignName;
@@ -151,5 +177,61 @@ public class ColumnMetaInfoVo implements Serializable {
 
     public void setGridAlignName(String gridAlignName) {
         this.gridAlignName = gridAlignName;
+    }
+
+    public String getAppModuleName() {
+        return appModuleName;
+    }
+
+    public void setAppModuleName(String appModuleName) {
+        this.appModuleName = appModuleName;
+    }
+
+    public String getAppSignName() {
+        return appSignName;
+    }
+
+    public void setAppSignName(String appSignName) {
+        this.appSignName = appSignName;
+    }
+
+    public String getDefaultControllerName() {
+        return defaultControllerName;
+    }
+
+    public void setDefaultControllerName(String defaultControllerName) {
+        this.defaultControllerName = defaultControllerName;
+    }
+
+    public String getDefaultModelName() {
+        return defaultModelName;
+    }
+
+    public void setDefaultModelName(String defaultModelName) {
+        this.defaultModelName = defaultModelName;
+    }
+
+    public String getDefaultStoreName() {
+        return defaultStoreName;
+    }
+
+    public void setDefaultStoreName(String defaultStoreName) {
+        this.defaultStoreName = defaultStoreName;
+    }
+
+    public String getStoreProxyUrl() {
+        return storeProxyUrl;
+    }
+
+    public void setStoreProxyUrl(String storeProxyUrl) {
+        this.storeProxyUrl = storeProxyUrl;
+    }
+
+    public String getStoreProxyRootProperty() {
+        return storeProxyRootProperty;
+    }
+
+    public void setStoreProxyRootProperty(String storeProxyRootProperty) {
+        this.storeProxyRootProperty = storeProxyRootProperty;
     }
 }

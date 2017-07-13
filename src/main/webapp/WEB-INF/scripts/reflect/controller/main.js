@@ -17,6 +17,7 @@ Ext.define('reflectDemo.controller.main', {
         'search.view',
         'search.name',
         'grid.view',
+        'grid.view2',
         'onestep.first'
     ],
     init: function () {
@@ -96,6 +97,31 @@ Ext.define('reflectDemo.controller.main', {
             return;
         }
 
+        var data = me.dealSearchSelections(selections);
+
+        var win = Ext.create('reflectDemo.view.search.view',{
+            title : '类型选择',
+            defaults:{
+                margin:10
+            },
+            items:[
+                {
+                    xtype:'reflectDemoViewSearchName'
+                },
+                {
+                    xtype : 'reflectDemoViewSearchForm',
+                    items : data.itemArr
+                }
+            ],
+            columnNameRemarkMap:data.columnNameRemarkMap
+        });
+
+
+        win.show();
+    },
+    dealSearchSelections:function(selections){
+        var me = this;
+
         var columnNameRemarkMap = {};
 
         var itemArr = [];
@@ -164,23 +190,11 @@ Ext.define('reflectDemo.controller.main', {
             curSubItemArr = [];
         }
 
-        var win = Ext.create('reflectDemo.view.search.view',{
-            title : '类型选择',
-            defaults:{
-                margin:10
-            },
-            items:[
-                {
-                    xtype:'reflectDemoViewSearchName'
-                },
-                {
-                    xtype : 'reflectDemoViewSearchForm',
-                    items : itemArr
-                }
-            ],
+        return {
+            itemArr:itemArr,
             columnNameRemarkMap:columnNameRemarkMap
-        });
-        win.show();
+        };
+
     },
     searchCode:function(btn,previewFunc){
         var me = this;
@@ -301,6 +315,18 @@ Ext.define('reflectDemo.controller.main', {
             return;
         }
 
+        var data = me.getGridFieldData(selections);
+
+        var win = Ext.create('reflectDemo.view.grid.view',{
+            columnArr:data.columnArr,
+            fieldOrderArr:data.fieldOrderArr
+        });
+
+        win.show();
+
+    },
+    getGridFieldData:function(selections){
+        var me = this;
         var columnArr = [];
         var fieldOrderArr = [];
         selections.forEach(function(curObj){
@@ -335,13 +361,10 @@ Ext.define('reflectDemo.controller.main', {
             }
         });
 
-        var win = Ext.create('reflectDemo.view.grid.view',{
+        return {
             columnArr:columnArr,
             fieldOrderArr:fieldOrderArr
-        });
-
-        win.show();
-
+        };
     },
     executeGrid:function(btn){
 
@@ -617,13 +640,13 @@ Ext.define('reflectDemo.controller.main', {
 
         var secondWin = me.getFieldSelectorWin('第二步:选择查询字段',function(){
             console.log('--3--');
-            me.toThird(this);
+            me.toThird1(this);
         },{
             firstStepFormData:firstStepFormData
         });
         secondWin.show();
     },
-    toThird:function(btn){
+    toThird1:function(btn){
         var me = this;
 
         var secondWin = btn.up('window');
@@ -636,36 +659,137 @@ Ext.define('reflectDemo.controller.main', {
         console.log('获取第二步选择的字段:');
         console.log(secondSelectionDataArr);
 
-        var thirdWindow = me.getFieldSelectorWin('第三步:选择结果列表字段',function(){
-            console.log('--4--');
-            me.toFourth(this);
-        },{
+
+        var data = me.dealSearchSelections(secondSelectionDataArr);
+
+        var third1Window = Ext.create('reflectDemo.view.search.view',{
+            title : '第三步：为查询字段设置标签类型',
+            height: 400,
+            items:[
+                {
+                    xtype : 'reflectDemoViewSearchForm',
+                    title : '',
+                    items : data.itemArr,
+                    dockedItems:[],
+                    height:'100%'
+                }
+            ],
+            columnNameRemarkMap:data.columnNameRemarkMap,
             firstStepFormData:secondWin.firstStepFormData,
-            secondSelectionDataArr:secondSelectionDataArr
+            buttons : [{
+                text : '下一步',
+                handler:function(){
+                    me.toThird(this);
+                }
+            }]
         });
 
         secondWin.close();
 
+        third1Window.show();
+    },
+    toThird:function(btn){
+        var me = this;
+
+        var curForm = btn.up('window').down('form');
+        var formData = Ext.create('Ext.data.Model',curForm.getForm().getValues());
+        var columnMeta = formData.data;
+
+        //取出 win 里，在上一步里传递的数据对象
+        var columnNameRemarkMap = curForm.up().columnNameRemarkMap;
+
+        var formFieldArr = [];
+        for(var key in columnMeta){
+
+            if(!Ext.isEmpty(columnNameRemarkMap[key])){
+                var curXtype = columnMeta[key];
+                var curFieldLabel = columnNameRemarkMap[key];
+                var curName = key;
+
+                formFieldArr.push({
+                    xtype:curXtype,
+                    fieldLabel:curFieldLabel,
+                    name:curName
+                });
+            }
+        }
+
+        //取出 win 里，在上一步里传递的第一步的表单数据
+        var firstStepFormData = curForm.up().firstStepFormData;
+
+
+        var thirdWindow = me.getFieldSelectorWin('第四步:选择结果列表字段',function(){
+            console.log('--4--');
+            me.toFourth1(this);
+        },{
+            firstStepFormData:firstStepFormData,
+            secondSelectionDataArr:formFieldArr
+        });
+
+        //关闭上一个页面
+        curForm.up().close();
+
         thirdWindow.show();
     },
-    toFourth:function(btn){
-        console.log('--5--');
+    toFourth1:function(btn){
+        console.log('toFourth1');
+        var me = this;
+
 
         var thirdWindow = btn.up('window');
         var thirdGrid = thirdWindow.down('grid');
-        var thirdSelectionDataArr = thirdGrid.getSelectionModel().getSelection();
-
-        console.log('===1===');
-        console.log(thirdWindow.firstStepFormData);
-
-        console.log('===2===');
-        console.log(thirdWindow.secondSelectionDataArr);
+        var thirdGridSelections = thirdGrid.getSelectionModel().getSelection();
+        var data = me.getGridFieldData(thirdGridSelections);
 
 
-        console.log('===3===');
-        console.log(thirdSelectionDataArr);
+        var fourth1Win = Ext.create('reflectDemo.view.grid.view2',{
+            title:'第五步：为结果列表字段排序',
+            columnArr:data.columnArr,
+            fieldOrderArr:data.fieldOrderArr,
+            buttons : [{
+                text : '下一步',
+                handler:function(){
+                    me.toFourth(this);
+                }
+            }],
+            firstStepFormData:thirdWindow.firstStepFormData,
+            secondSelectionDataArr:thirdWindow.secondSelectionDataArr
+        });
 
         thirdWindow.close();
+
+        fourth1Win.show();
+    },
+    toFourth:function(btn){
+        var me = this;
+
+        var win = btn.up('window');
+        var form = win.down('form');
+
+        var formData = Ext.create('Ext.data.Model',form.getForm().getValues());
+
+        var columnArr = win.columnArr;
+        columnArr.forEach(function(curData){
+            var columnName = curData['columnName'];
+            curData['order'] = formData.get(columnName);
+        });
+
+
+        //初始化应用的基础数据
+        var params = win.firstStepFormData.data;
+
+        //展示 search 时使用的字段
+        params['extFormFieldDtoList'] = win.secondSelectionDataArr;
+
+        //展示 grid 时排好序的字段
+        params['columnMetaInfoDtoList'] = columnArr;
+
+        console.log(params);
+
+        var url = '../ext/oneStep';
+        me.requestAjax(url,params,win,function(result){
+            console.log('success');
+        },btn);
 
     },
     getFieldSelectorWin:function(winTitle,nextFunc,cfg){

@@ -126,6 +126,12 @@ public class ExtReflectController {
         return mv;
     }
 
+    @RequestMapping(value = "/oneStep",method = RequestMethod.POST)
+    public void oneStep(@RequestBody ColumnMetaInfoVo vo){
+        System.out.println("1111");
+        System.out.println("2222");
+    }
+
 
     public ColumnMetaInfoVo getVo() {
         return vo;

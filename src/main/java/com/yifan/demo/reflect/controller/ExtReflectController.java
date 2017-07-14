@@ -9,16 +9,17 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -145,8 +146,78 @@ public class ExtReflectController {
     }
 
     @RequestMapping(value = "/oneStep",method = RequestMethod.POST)
-    public void oneStep(@RequestBody ColumnMetaInfoVo vo, HttpSession session){
+    public void oneStep(@RequestBody ColumnMetaInfoVo vo,
+                                          HttpSession session,
+                                          HttpServletRequest request,
+                                          HttpServletResponse response) throws Exception {
         templdateParseAndCreate(vo, session);
+
+        //webapp/tmp/
+        String tmpPath = session.getServletContext().getRealPath(File.separator + "temp");
+
+        //webapp/tmp/extFtl/appSginName
+        String appDirPath = tmpPath + File.separator + "extFtl" + File.separator + vo.getAppSignName();
+
+        //webapp/tmp/extFtl/appSginName/controller
+        String controllerDirPath = appDirPath + File.separator + "controller";
+
+        //webapp/tmp/extFtl/appSginName/controller/main.js
+        String controllerMainPath = controllerDirPath + File.separator + "main.rar";
+
+
+        HttpHeaders headers = new HttpHeaders();
+
+        //声明变量
+        File file = new File(controllerMainPath);
+        response.setHeader("Content-disposition", "attachment; filename*=UTF-8''" + "aaa.rar");  //处理文件名包含%20 不转换成空格
+
+        // 读取要下载的文件，保存到文件输入流
+        FileInputStream in = new FileInputStream(file);
+
+        // 创建输出流
+        OutputStream out = response.getOutputStream();
+
+        // 创建缓冲区
+        byte buffer[] = new byte[1024];
+        int len = 0;
+        // 循环将输入流中的内容读取到缓冲区当中
+        while ((len = in.read(buffer)) > 0) {
+            // 输出缓冲区的内容到浏览器，实现文件下载
+            out.write(buffer, 0, len);
+        }
+        // 关闭文件输入流
+        in.close();
+        // 关闭输出流
+        out.close();
+    }
+
+    public static void download(HttpServletRequest request,
+                                HttpServletResponse response,
+                                String downLoadPath,
+                                String contentType,
+                                String realName) throws Exception {
+        response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+
+
+        long fileLength = new File(downLoadPath).length();
+
+        response.setContentType(contentType);
+        response.setHeader("Content-disposition", "attachment; filename="
+                + new String(realName.getBytes("utf-8"), "ISO8859-1"));
+        response.setHeader("Content-Length", String.valueOf(fileLength));
+
+        bis = new BufferedInputStream(new FileInputStream(downLoadPath));
+        bos = new BufferedOutputStream(response.getOutputStream());
+        byte[] buff = new byte[2048];
+        int bytesRead;
+        while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+            bos.write(buff, 0, bytesRead);
+        }
+        bis.close();
+        bos.close();
     }
 
     /**
@@ -177,7 +248,7 @@ public class ExtReflectController {
         createDir(controllerDirPath);
 
         //webapp/tmp/extFtl/appSginName/controller/main.js
-        String controllerMainPath = controllerDirPath + File.separator + "main.js";
+        String controllerMainPath = controllerDirPath + File.separator + "main.rar";
         createFile(controllerMainPath);
 
 
@@ -186,7 +257,7 @@ public class ExtReflectController {
         createDir(storeDirPath);
 
         //webapp/tmp/extFtl/appSginName/store/main.js
-        String storeMainPath = storeDirPath + File.separator + "main.js";
+        String storeMainPath = storeDirPath + File.separator + "main.rar";
         createFile(storeMainPath);
 
 
@@ -195,7 +266,7 @@ public class ExtReflectController {
         createDir(modelDirPath);
 
         //webapp/tmp/extFtl/appSginName/model/main.js
-        String modelMainPath = modelDirPath + File.separator + "main.js";
+        String modelMainPath = modelDirPath + File.separator + "main.rar";
         createFile(modelMainPath);
 
 
@@ -213,16 +284,16 @@ public class ExtReflectController {
         createFile(appPath);
 
         //webapp/tmp/extFtl/appSginName/view/Viewport.js
-        String viewportPath = viewDirPath + File.separator + "Viewport.js";
+        String viewportPath = viewDirPath + File.separator + "Viewport.rar";
         createFile(viewportPath);
 
 
         //webapp/tmp/extFtl/appSginName/view/main/search.js
-        String searchPath = viewMainDirPath + File.separator + "search.js";
+        String searchPath = viewMainDirPath + File.separator + "search.rar";
         createFile(searchPath);
 
         //webapp/tmp/extFtl/appSginName/view/main/list.js
-        String listPath = viewMainDirPath + File.separator + "list.js";
+        String listPath = viewMainDirPath + File.separator + "list.rar";
         createFile(listPath);
 
 

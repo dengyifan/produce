@@ -786,10 +786,21 @@ Ext.define('reflectDemo.controller.main', {
 
         console.log(params);
 
-        var url = '../ext/oneStep';
-        me.requestAjax(url,params,win,function(result){
-            console.log('success');
-        },btn);
+        var url = '../file/download';
+
+        var params = {};
+        params['path'] = "/home/yifan/ideaspace/demo/produce/src/main/webapp/temp/extFtl/b/controller/main.rar";
+        params['fileName'] = "main.rar";
+
+
+
+        var frm = document.createElement('form');
+        frm.id = 'capacityProcureExportForm';
+        frm.style.display = 'none';
+        document.body.appendChild(frm);
+        frm.method ="post";
+        frm.action = url;
+        frm.submit();
 
     },
     getFieldSelectorWin:function(winTitle,nextFunc,cfg){

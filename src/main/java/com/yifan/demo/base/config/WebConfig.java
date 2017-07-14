@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
@@ -63,6 +64,22 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         configurer.setFreemarkerSettings(properties);
         return configurer;
     }
+
+
+    @Bean
+    public CommonsMultipartResolver multipartResolver(){
+        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+        resolver.setDefaultEncoding("utf-8");
+        resolver.setMaxUploadSize(10485760);
+
+        //配置上传文件的缓存 ，单位为字节
+        resolver.setMaxInMemorySize(4096);
+
+        //属性启用是为了推迟文件解析，以便在UploadAction 中捕获文件大小异常
+        resolver.setResolveLazily(true);
+        return resolver;
+    }
+
 
 
     /**

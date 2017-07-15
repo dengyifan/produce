@@ -5,7 +5,7 @@
   <artifactId>produce</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>reduce Maven Webapp</name>
+  <name>produce Maven Webapp</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -238,7 +238,7 @@
 
 
   <build>
-    <finalName>reduce</finalName>
+    <finalName>produce</finalName>
 
     <plugins>
 

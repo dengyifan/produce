@@ -1,15 +1,15 @@
-Ext.define('${appSignName}.controller.tableController', {
+Ext.define('${appSignName}.controller.${defaultControllerName}', {
     extend: 'Ext.app.Controller',
-    stores: ['main'],
-    models: ['main'],
+    stores: ['${defaultStoreName}'],
+    models: ['${modelSignName}'],
     views: [
         'Viewport',
-        'main.search',
-        'main.list'
+        'main.${searchAlignName}',
+        'main.${gridAlignName}'
     ],
     init: function () {
         this.control({
-            'mainSearch button[action = query]': {
+            '${searchAlignName} button[action = mainQuery]': {
                 click: this.mainQuery
             }
         });

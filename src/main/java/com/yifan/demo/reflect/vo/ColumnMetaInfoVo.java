@@ -29,6 +29,8 @@ public class ColumnMetaInfoVo implements Serializable {
     //store 默认文件名
     private String defaultStoreName;
 
+    private String defaultGridName;
+
 
     //store 请求 url
     private String storeProxyUrl;
@@ -65,6 +67,9 @@ public class ColumnMetaInfoVo implements Serializable {
 
     //是否存在日期字段
     private boolean containsDate;
+
+    private String downloadFilePath;
+    private String downloadFileName;
 
 
     public ColumnMetaInfoDto getColumnMetaInfoDto() {
@@ -233,5 +238,30 @@ public class ColumnMetaInfoVo implements Serializable {
 
     public void setStoreProxyRootProperty(String storeProxyRootProperty) {
         this.storeProxyRootProperty = storeProxyRootProperty;
+    }
+
+
+    public String getDownloadFilePath() {
+        return downloadFilePath;
+    }
+
+    public void setDownloadFilePath(String downloadFilePath) {
+        this.downloadFilePath = downloadFilePath;
+    }
+
+    public String getDownloadFileName() {
+        return downloadFileName;
+    }
+
+    public void setDownloadFileName(String downloadFileName) {
+        this.downloadFileName = downloadFileName;
+    }
+
+    public String getDefaultGridName() {
+        return defaultGridName;
+    }
+
+    public void setDefaultGridName(String defaultGridName) {
+        this.defaultGridName = defaultGridName;
     }
 }

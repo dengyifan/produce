@@ -1,7 +1,7 @@
 Ext.application({
     name: "${appSignName}",
     appFolder: '../scripts/${appModuleName}/${appSignName}',
-    controllers: ["main"],
+    controllers: ["${defaultControllerName}"],
     autoCreateViewport: true,
     launch: function () {}
 });

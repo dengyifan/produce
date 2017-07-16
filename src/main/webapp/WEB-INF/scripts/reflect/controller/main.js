@@ -786,21 +786,30 @@ Ext.define('reflectDemo.controller.main', {
 
         console.log(params);
 
-        var url = '../file/download';
 
-        var params = {};
-        params['path'] = "/home/yifan/ideaspace/demo/produce/src/main/webapp/temp/extFtl/b/controller/main.rar";
-        params['fileName'] = "main.rar";
+        var url = '../ext/oneStep';
+        me.requestAjax(url,params,win,function(result){
+
+            console.log(result);
+
+            var downloadUrl = '../file/download?path='+result.result.downloadFilePath+'&fileName='+result.result.downloadFileName;
+
+            var frm = document.getElementById('downloadForm');
+            if(Ext.isEmpty(frm)){
+                frm = document.createElement('form');
+                frm.id = 'downloadForm';
+                frm.style.display = 'none';
+                document.body.appendChild(frm);
+                frm.method ="post";
+                frm.action = downloadUrl;
+            }
+
+            frm.submit();
+        },btn);
 
 
 
-        var frm = document.createElement('form');
-        frm.id = 'capacityProcureExportForm';
-        frm.style.display = 'none';
-        document.body.appendChild(frm);
-        frm.method ="post";
-        frm.action = url;
-        frm.submit();
+
 
     },
     getFieldSelectorWin:function(winTitle,nextFunc,cfg){
@@ -870,7 +879,8 @@ Ext.define('reflectDemo.controller.main', {
             timeout:5000,
             success: function(response,options){
                 if(!Ext.isEmpty(callback)){
-                    callback.apply(context,[response.responseText]);
+                    var result = Ext.decode(response.responseText);
+                    callback.apply(context,[result]);
                 }
 
             },

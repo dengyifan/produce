@@ -27,8 +27,8 @@ public class FileController {
                          @RequestParam(value = "fileName", required = false) String fileName, HttpServletRequest request,
                          HttpServletResponse response) throws UnsupportedEncodingException {
 
-        path = "/home/yifan/ideaspace/demo/produce/src/main/webapp/temp/extFtl/b/controller/main.rar";
-        fileName = "main.rar";
+        //path = "/home/dengyin/IdeaProjects/produce/src/main/webapp/WEB-INF/aaa.rar";
+        //fileName = "aaa.rar";
 
         logger.info("name is :{}", path);
         if (StringUtils.isBlank(path) && StringUtils.isBlank(fileName)) {
@@ -85,7 +85,7 @@ public class FileController {
         } catch (IOException e) {
             logger.error("文件下载异常:{}", e);
         } finally {
-            response.reset();
+
             IOUtils.closeQuietly(inputStream);
         }
     }

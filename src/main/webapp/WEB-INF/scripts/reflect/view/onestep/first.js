@@ -21,31 +21,23 @@ Ext.define("reflectDemo.view.onestep.first", {
                     {
                         fieldLabel : '模块名',
                         name : 'appModuleName',
-                        emptyText:'应用模块名'
+                        emptyText:'应用模块名',
+                        value:'table'
                     },{
                         fieldLabel : '应用名',
                         name : 'appSignName',
-                        emptyText:'应用签名，可以多级'
-                    },{
-                        fieldLabel : 'controller 名',
-                        name : 'defaultControllerName',
-                        emptyText:'controller 文件名'
-                    },{
-                        fieldLabel : 'model 名',
-                        name : 'defaultModelName',
-                        emptyText:'model 文件名'
-                    },{
-                        fieldLabel : 'store 名',
-                        name : 'defaultStoreName',
-                        emptyText:'store 文件名'
+                        emptyText:'应用签名，可以多级',
+                        value:'waybill'
                     },{
                         fieldLabel : '查询请求',
                         name : 'storeProxyUrl',
-                        emptyText:'../模块名/请求名'
+                        emptyText:'../模块名/请求名',
+                        value:'../table/waybill/mainQuery'
                     },{
                         fieldLabel : '查询集合名',
                         name : 'storeProxyRootProperty',
-                        emptyText:'result 后面的,不包括 .'
+                        emptyText:'result 后面的,不包括 .',
+                        value:'mainDtoList'
                     }
                 ]
             }

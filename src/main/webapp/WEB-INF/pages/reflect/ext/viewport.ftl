@@ -2,14 +2,14 @@ Ext.define("${appSignName}.view.Viewport", {
     extend: "Ext.container.Viewport",
     layout: "border",
     items: [{
-        xtype:"reflectDemoSearch"
+        xtype:"${searchSignName}"
     },{
-        xtype:"reflectDemoGrid"
+        xtype:"${gridAlignName}"
     }],
-    getSearchForm : function(){
+    getMainSearch : function(){
         return this.items.get(0);
     },
-    getTableGrid : function(){
+    getMainList : function(){
         return this.items.get(1);
     }
 });

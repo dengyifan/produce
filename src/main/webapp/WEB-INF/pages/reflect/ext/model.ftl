@@ -1,4 +1,4 @@
-Ext.define('${modelSignName}', {
+Ext.define('${appSignName}.model.${modelSignName}', {
     extend: 'Ext.data.Model',
     fields: [
         <#list columnMetaInfoDtoList as meta>

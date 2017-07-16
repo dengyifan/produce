@@ -1,4 +1,4 @@
-Ext.define("${searchSignName}", {
+Ext.define("${appSignName}.view.main.${searchSignName}", {
     extend : "Ext.form.Panel",
     alias : 'widget.${searchAlignName}',
     width : '100%',
@@ -26,7 +26,7 @@ Ext.define("${searchSignName}", {
     buttons : [{
         xtype:'button',
         text: '查询',
-        action: 'search'
+        action: 'mainQuery'
     },{
         xtype:'button',
         text: '重置',

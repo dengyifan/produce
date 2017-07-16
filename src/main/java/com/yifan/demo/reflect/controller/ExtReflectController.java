@@ -2,6 +2,7 @@ package com.yifan.demo.reflect.controller;
 
 import com.google.common.io.Files;
 import com.yifan.demo.base.config.Response;
+import com.yifan.demo.common.CompactAlgorithm;
 import com.yifan.demo.reflect.dto.ColumnMetaInfoDto;
 import com.yifan.demo.reflect.service.IMetaInfoService;
 import com.yifan.demo.reflect.vo.ColumnMetaInfoVo;
@@ -9,7 +10,6 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,7 +19,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -146,79 +148,33 @@ public class ExtReflectController {
     }
 
     @RequestMapping(value = "/oneStep",method = RequestMethod.POST)
-    public void oneStep(@RequestBody ColumnMetaInfoVo vo,
+    @ResponseBody
+    public Response oneStep(@RequestBody ColumnMetaInfoVo vo,
                                           HttpSession session,
                                           HttpServletRequest request,
                                           HttpServletResponse response) throws Exception {
+
+
+        fileNameInit(vo);
         templdateParseAndCreate(vo, session);
 
-        //webapp/tmp/
-        String tmpPath = session.getServletContext().getRealPath(File.separator + "temp");
-
-        //webapp/tmp/extFtl/appSginName
-        String appDirPath = tmpPath + File.separator + "extFtl" + File.separator + vo.getAppSignName();
-
-        //webapp/tmp/extFtl/appSginName/controller
-        String controllerDirPath = appDirPath + File.separator + "controller";
-
-        //webapp/tmp/extFtl/appSginName/controller/main.js
-        String controllerMainPath = controllerDirPath + File.separator + "main.rar";
-
-
-        HttpHeaders headers = new HttpHeaders();
-
-        //声明变量
-        File file = new File(controllerMainPath);
-        response.setHeader("Content-disposition", "attachment; filename*=UTF-8''" + "aaa.rar");  //处理文件名包含%20 不转换成空格
-
-        // 读取要下载的文件，保存到文件输入流
-        FileInputStream in = new FileInputStream(file);
-
-        // 创建输出流
-        OutputStream out = response.getOutputStream();
-
-        // 创建缓冲区
-        byte buffer[] = new byte[1024];
-        int len = 0;
-        // 循环将输入流中的内容读取到缓冲区当中
-        while ((len = in.read(buffer)) > 0) {
-            // 输出缓冲区的内容到浏览器，实现文件下载
-            out.write(buffer, 0, len);
-        }
-        // 关闭文件输入流
-        in.close();
-        // 关闭输出流
-        out.close();
+        Response resp = new Response();
+        resp.setResult(vo);
+        return resp;
     }
 
-    public static void download(HttpServletRequest request,
-                                HttpServletResponse response,
-                                String downLoadPath,
-                                String contentType,
-                                String realName) throws Exception {
-        response.setContentType("text/html;charset=UTF-8");
-        request.setCharacterEncoding("UTF-8");
-        BufferedInputStream bis = null;
-        BufferedOutputStream bos = null;
-
-
-        long fileLength = new File(downLoadPath).length();
-
-        response.setContentType(contentType);
-        response.setHeader("Content-disposition", "attachment; filename="
-                + new String(realName.getBytes("utf-8"), "ISO8859-1"));
-        response.setHeader("Content-Length", String.valueOf(fileLength));
-
-        bis = new BufferedInputStream(new FileInputStream(downLoadPath));
-        bos = new BufferedOutputStream(response.getOutputStream());
-        byte[] buff = new byte[2048];
-        int bytesRead;
-        while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
-            bos.write(buff, 0, bytesRead);
-        }
-        bis.close();
-        bos.close();
+    private void fileNameInit(ColumnMetaInfoVo vo) {
+        String appSignName = vo.getAppSignName();
+        vo.setDefaultControllerName(appSignName+"Controller");
+        vo.setDefaultGridName(appSignName+"List");
+        vo.setGridSignName(appSignName+"List");
+        vo.setGridAlignName(appSignName+"List");
+        vo.setModelSignName(appSignName+"Model");
+        vo.setSearchSignName(appSignName+"Search");
+        vo.setSearchAlignName(appSignName+"Search");
+        vo.setDefaultStoreName(appSignName+"Store");
     }
+
 
     /**
      * 解析模板 并生成对应的文件目录和文件
@@ -238,8 +194,11 @@ public class ExtReflectController {
         //webapp/tmp/
         String tmpPath = session.getServletContext().getRealPath(File.separator + "temp");
 
+        //webapp/tmp/extFtl/
+        String extFtlPath = tmpPath + File.separator + "extFtl";
+
         //webapp/tmp/extFtl/appSginName
-        String appDirPath = tmpPath + File.separator + "extFtl" + File.separator + vo.getAppSignName();
+        String appDirPath = extFtlPath + File.separator + vo.getAppSignName();
         createDir(appDirPath);
 
 
@@ -248,7 +207,7 @@ public class ExtReflectController {
         createDir(controllerDirPath);
 
         //webapp/tmp/extFtl/appSginName/controller/main.js
-        String controllerMainPath = controllerDirPath + File.separator + "main.rar";
+        String controllerMainPath = controllerDirPath + File.separator + vo.getDefaultControllerName() + ".js";
         createFile(controllerMainPath);
 
 
@@ -257,7 +216,7 @@ public class ExtReflectController {
         createDir(storeDirPath);
 
         //webapp/tmp/extFtl/appSginName/store/main.js
-        String storeMainPath = storeDirPath + File.separator + "main.rar";
+        String storeMainPath = storeDirPath + File.separator + vo.getDefaultStoreName() +".js";
         createFile(storeMainPath);
 
 
@@ -266,7 +225,7 @@ public class ExtReflectController {
         createDir(modelDirPath);
 
         //webapp/tmp/extFtl/appSginName/model/main.js
-        String modelMainPath = modelDirPath + File.separator + "main.rar";
+        String modelMainPath = modelDirPath + File.separator + vo.getModelSignName() +".js";
         createFile(modelMainPath);
 
 
@@ -280,20 +239,20 @@ public class ExtReflectController {
 
 
         //webapp/tmp/extFtl/appSginName/app.js
-        String appPath = appDirPath + File.separator + "app.js";
+        String appPath = appDirPath + File.separator + vo.getAppSignName() + "App.js";
         createFile(appPath);
 
         //webapp/tmp/extFtl/appSginName/view/Viewport.js
-        String viewportPath = viewDirPath + File.separator + "Viewport.rar";
+        String viewportPath = viewDirPath + File.separator + "Viewport.js";
         createFile(viewportPath);
 
 
         //webapp/tmp/extFtl/appSginName/view/main/search.js
-        String searchPath = viewMainDirPath + File.separator + "search.rar";
+        String searchPath = viewMainDirPath + File.separator + vo.getSearchAlignName() + ".js";
         createFile(searchPath);
 
         //webapp/tmp/extFtl/appSginName/view/main/list.js
-        String listPath = viewMainDirPath + File.separator + "list.rar";
+        String listPath = viewMainDirPath + File.separator + vo.getGridAlignName() + ".js";
         createFile(listPath);
 
 
@@ -307,7 +266,26 @@ public class ExtReflectController {
             Files.write(modelCnt.getBytes(),new File(modelMainPath));
             Files.write(storeCnt.getBytes(),new File(storeMainPath));
 
+
+            //压缩
+            String downloadFileName = vo.getAppSignName() + ".zip";
+            String downloadFilePath = extFtlPath + File.separator + downloadFileName;
+
+            File appDirFile = new File(appDirPath);
+
+            File extFtlFile = new File(downloadFilePath);
+
+            //ZipUtils.doCompress(appDirFile,extFtlFile);
+
+            new CompactAlgorithm(new File( downloadFilePath)).zipFiles(appDirFile);
+
+
+            vo.setDownloadFilePath(downloadFilePath);
+            vo.setDownloadFileName(downloadFileName);
+
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -325,6 +303,7 @@ public class ExtReflectController {
         Configuration configuration = configurer.getConfiguration();
         StringWriter out = new StringWriter();
         try {
+
             Template template = configuration.getTemplate(ftlPath);
             template.process(vo,out);
 

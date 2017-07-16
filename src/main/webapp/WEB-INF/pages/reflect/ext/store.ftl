@@ -1,6 +1,6 @@
-Ext.define("${appSignName}.store.main", {
+Ext.define("${appSignName}.store.${defaultStoreName}", {
     extend: "Ext.data.Store",
-    model: "reflectDemo.model.main",
+    model: "${appSignName}.model.${modelSignName}",
     pageSize : 600,
     queryForm:null,//查询表单
     setQueryForm:function(form){

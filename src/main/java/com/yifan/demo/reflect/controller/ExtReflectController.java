@@ -272,13 +272,9 @@ public class ExtReflectController {
             String downloadFilePath = extFtlPath + File.separator + downloadFileName;
 
             File appDirFile = new File(appDirPath);
-
             File extFtlFile = new File(downloadFilePath);
 
-            //ZipUtils.doCompress(appDirFile,extFtlFile);
-
             new CompactAlgorithm(new File( downloadFilePath)).zipFiles(appDirFile);
-
 
             vo.setDownloadFilePath(downloadFilePath);
             vo.setDownloadFileName(downloadFileName);

@@ -10,7 +10,8 @@ public class FileUtils {
     public static boolean createDir(String destDirName) {
         File dir = new File(destDirName);
         if (dir.exists()) {
-            System.out.println("创建目录" + destDirName + "失败，目标目录已经存在");
+            //System.out.println("创建目录" + destDirName + "失败，目标目录已经存在");
+            dir.deleteOnExit();
             return false;
         }
         if (!destDirName.endsWith(File.separator)) {
@@ -29,7 +30,8 @@ public class FileUtils {
     public static boolean createFile(String destFileName) {
         File file = new File(destFileName);
         if(file.exists()) {
-            System.out.println("创建单个文件" + destFileName + "失败，目标文件已存在！");
+            //System.out.println("创建单个文件" + destFileName + "失败，目标文件已存在！");
+            file.deleteOnExit();
             return false;
         }
         if (destFileName.endsWith(File.separator)) {

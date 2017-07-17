@@ -805,11 +805,8 @@ Ext.define('reflectDemo.controller.main', {
             }
 
             frm.submit();
+            win.close();
         },btn);
-
-
-
-
 
     },
     getFieldSelectorWin:function(winTitle,nextFunc,cfg){

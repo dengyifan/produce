@@ -1,7 +1,7 @@
 Ext.define('${appSignName}.view.main.${defaultGridName}', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.${gridAlignName}',
-    store:'main',
+    store:'${defaultStoreName}',
     region: 'center',
     width: '100%',
     emptyText: '查询结果为空',

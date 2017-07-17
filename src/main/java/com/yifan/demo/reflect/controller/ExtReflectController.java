@@ -51,6 +51,14 @@ public class ExtReflectController {
     }
 
 
+
+    @RequestMapping("/preview")
+    public ModelAndView preview(){
+        ModelAndView mv = new ModelAndView("preview");
+        return mv;
+    }
+
+
     @RequestMapping("/meta")
     @ResponseBody
     public Response metaInfo(@ModelAttribute("vo") ColumnMetaInfoVo vo){

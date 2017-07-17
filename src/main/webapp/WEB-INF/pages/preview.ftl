@@ -5,7 +5,8 @@
     <title>${title}</title>
 
     <#include "common.ftl">
-    <script type="text/javascript" src="../scripts/reflect/reflect.js"></script>
+
+    <script type="text/javascript" src="../scripts/table/waybill/waybillApp.js"></script>
 
 </head>
 <body>

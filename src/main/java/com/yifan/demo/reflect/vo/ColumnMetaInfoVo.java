@@ -5,6 +5,7 @@ import com.yifan.demo.reflect.dto.ExtFormFieldDto;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by dengyin on 17-7-11.
@@ -43,6 +44,10 @@ public class ColumnMetaInfoVo implements Serializable {
 
     //查询结果字段集合
     private List<ColumnMetaInfoDto> columnMetaInfoDtoList;
+
+
+    private Map<String,List<ExtFormFieldDto>> extFormListMap;
+
 
 
     private String searchSignName;
@@ -86,6 +91,14 @@ public class ColumnMetaInfoVo implements Serializable {
 
     public void setColumnMetaInfoDtoList(List<ColumnMetaInfoDto> columnMetaInfoDtoList) {
         this.columnMetaInfoDtoList = columnMetaInfoDtoList;
+    }
+
+    public Map<String, List<ExtFormFieldDto>> getExtFormListMap() {
+        return extFormListMap;
+    }
+
+    public void setExtFormListMap(Map<String, List<ExtFormFieldDto>> extFormListMap) {
+        this.extFormListMap = extFormListMap;
     }
 
     public int getTotalCount() {

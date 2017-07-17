@@ -4,6 +4,7 @@ import com.google.common.io.Files;
 import com.yifan.demo.base.config.Response;
 import com.yifan.demo.common.CompactAlgorithm;
 import com.yifan.demo.reflect.dto.ColumnMetaInfoDto;
+import com.yifan.demo.reflect.dto.ExtFormFieldDto;
 import com.yifan.demo.reflect.service.IMetaInfoService;
 import com.yifan.demo.reflect.vo.ColumnMetaInfoVo;
 import freemarker.template.Configuration;
@@ -22,8 +23,7 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 
 import static com.yifan.demo.common.FileUtils.createDir;
 import static com.yifan.demo.common.FileUtils.createFile;
@@ -161,6 +161,31 @@ public class ExtReflectController {
                                           HttpSession session,
                                           HttpServletRequest request,
                                           HttpServletResponse response) throws Exception {
+
+        List<ExtFormFieldDto> extFormFieldDtoList = vo.getExtFormFieldDtoList();
+
+        Map<String,List<ExtFormFieldDto>> extFormListMap = new HashMap<>();
+
+        if(extFormFieldDtoList != null && extFormFieldDtoList.size() > 0){
+
+            List<ExtFormFieldDto> subList = new ArrayList<>();
+
+            for(int i = 0; i < extFormFieldDtoList.size(); i++){
+                if((i+1) % 5 == 0){
+                    extFormListMap.put(i+"",subList);
+                    subList = new ArrayList<>();
+                    subList.add(extFormFieldDtoList.get(i));
+                } else {
+                    subList.add(extFormFieldDtoList.get(i));
+                }
+            }
+
+            if(subList != null && subList.size() > 0){
+                extFormListMap.put((extFormFieldDtoList.size() + 1)+"",subList);
+            }
+        }
+
+        vo.setExtFormListMap(extFormListMap);
 
 
         fileNameInit(vo);

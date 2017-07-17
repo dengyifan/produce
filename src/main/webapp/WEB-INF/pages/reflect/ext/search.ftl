@@ -2,26 +2,44 @@ Ext.define("${appSignName}.view.main.${searchSignName}", {
     extend : "Ext.form.Panel",
     alias : 'widget.${searchAlignName}',
     width : '100%',
-    height : 80,
-    layout : 'column',
+    height : 200,
     region : 'north',
-    defaults : {
-        msgTarget : 'qtip',
-        margin: '15 10 5 0',
-        labelWidth : 100,
-        columnWidth : 0.25,
-        labelAlign : 'right'
+    fieldDefaults: {
+        labelWidth: 95,
+        margin: '8 5 5 5',
+        labelAlign : 'right',
+        labelSeparator:'',
+        width:210
     },
-    defaultType : 'textfield',
     items : [
 
-        <#list extFormFieldDtoList as field>
-        {
-            fieldLabel : '${field.fieldLabel}',
-            name : '${field.name}',
-            xtype : '${field.xtype}'
-        }<#if !field?is_last>,</#if>
-        </#list>
+
+<#list extFormListMap?keys as curMapKey>
+    {
+        layout : 'column',
+        defaults : {
+            labelWidth : 40,
+            labelAlign : "right",
+        },
+        defaults : {
+            margins : '10 10 10 10'
+        },
+        items : [
+
+            <#assign item = extFormListMap[curMapKey]>
+            <#list item as field>
+                {
+                    fieldLabel : '${field.fieldLabel}',
+                    name : '${field.name}',
+                    xtype : '${field.xtype}'
+                }<#if !field?is_last>,</#if>
+            </#list>
+        ]
+    },
+
+</#list>
+
+
     ],
     buttons : [{
         xtype:'button',

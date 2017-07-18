@@ -18,8 +18,8 @@ Ext.define("reflectDemo.view.search.name", {
     autoScroll:true,
     items:[
         {
-            fieldLabel:'签名',
-            name:'searchSignName'
+            fieldLabel:'应用名',
+            name:'appSignName'
         },
         {
             fieldLabel:'别名',

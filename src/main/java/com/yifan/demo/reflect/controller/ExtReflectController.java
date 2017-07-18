@@ -101,8 +101,11 @@ public class ExtReflectController {
     public ModelAndView searchCode(@RequestBody ColumnMetaInfoVo vo){
         ModelAndView mv = new ModelAndView();
         mv.setViewName("reflect/ext/search");
-        mv.addObject("extFormFieldDtoList",vo.getExtFormFieldDtoList());
-        mv.addObject("searchSignName",vo.getSearchSignName());
+
+        extFormList2Map(vo);
+
+        mv.addObject("extFormListMap",vo.getExtFormListMap());
+        mv.addObject("appSignName",vo.getAppSignName());
         mv.addObject("searchAlignName",vo.getSearchAlignName());
         return mv;
     }
@@ -120,9 +123,15 @@ public class ExtReflectController {
             }
         });
 
+
+        fileNameInit(vo);
+
         mv.addObject("columnMetaInfoDtoList",vo.getColumnMetaInfoDtoList());
-        mv.addObject("gridSignName",vo.getGridSignName());
+
+        mv.addObject("appSignName",vo.getAppSignName());
+        mv.addObject("defaultGridName",vo.getDefaultGridName());
         mv.addObject("gridAlignName",vo.getGridAlignName());
+        mv.addObject("defaultStoreName",null);
         return mv;
     }
 
@@ -161,7 +170,17 @@ public class ExtReflectController {
                                           HttpSession session,
                                           HttpServletRequest request,
                                           HttpServletResponse response) throws Exception {
+        extFormList2Map(vo);
 
+        fileNameInit(vo);
+        templdateParseAndCreate(vo, session);
+
+        Response resp = new Response();
+        resp.setResult(vo);
+        return resp;
+    }
+
+    private void extFormList2Map(ColumnMetaInfoVo vo) {
         List<ExtFormFieldDto> extFormFieldDtoList = vo.getExtFormFieldDtoList();
 
         Map<String,List<ExtFormFieldDto>> extFormListMap = new HashMap<>();
@@ -186,14 +205,6 @@ public class ExtReflectController {
         }
 
         vo.setExtFormListMap(extFormListMap);
-
-
-        fileNameInit(vo);
-        templdateParseAndCreate(vo, session);
-
-        Response resp = new Response();
-        resp.setResult(vo);
-        return resp;
     }
 
     private void fileNameInit(ColumnMetaInfoVo vo) {

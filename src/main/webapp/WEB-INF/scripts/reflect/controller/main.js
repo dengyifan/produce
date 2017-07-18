@@ -201,11 +201,11 @@ Ext.define('reflectDemo.controller.main', {
 
         var nameForm = btn.up('window').down('form');
         var nameFormData = Ext.create('Ext.data.Model',nameForm.getForm().getValues());
-        var searchSignName = nameFormData.get('searchSignName');
+        var appSignNameName = nameFormData.get('appSignName');
         var searchAlignName = nameFormData.get('searchAlignName');
 
         //给个默认值
-        searchSignName = Ext.isEmpty(searchSignName) ? 'aa.bb.form.cc':searchSignName;
+        appSignNameName = Ext.isEmpty(appSignNameName) ? 'cc':appSignNameName;
         searchAlignName = Ext.isEmpty(searchAlignName) ? 'aaBbFormCc':searchAlignName;
 
         var curForm = btn.up('form');
@@ -234,13 +234,13 @@ Ext.define('reflectDemo.controller.main', {
         var url = '../ext/searchCode';
         var params = {
             'extFormFieldDtoList':formFieldArr,
-            'searchSignName':searchSignName,
+            'appSignName':appSignNameName,
             'searchAlignName':searchAlignName
         };
         var context = btn.up('form');
-        me.requestAjax(url,params,context,function(result){
+        me.requestAjaxResponseText(url,params,context,function(result){
             if(previewFunc instanceof Function){
-                previewFunc.apply(context,[result,searchSignName]);
+                previewFunc.apply(context,[result,appSignNameName,searchAlignName]);
             } else {
                 me.showScriptStr('Search',result);
             }
@@ -249,7 +249,7 @@ Ext.define('reflectDemo.controller.main', {
     },
     searchPreview:function(btn){
         var me = this;
-        me.searchCode(btn,function(result,searchSignName){
+        me.searchCode(btn,function(result,appSignNameName,searchAlignName){
 
             eval(result);
             var win = Ext.create('Ext.window.Window',{
@@ -259,7 +259,7 @@ Ext.define('reflectDemo.controller.main', {
                 layout : "fit",
                 modal : true,
                 items : [
-                    Ext.create(searchSignName)
+                    Ext.create(appSignNameName+'.view.main.'+searchAlignName)
                 ]
             });
             win.show();
@@ -375,12 +375,8 @@ Ext.define('reflectDemo.controller.main', {
 
         var formData = Ext.create('Ext.data.Model',form.getForm().getValues());
 
-        var gridSignName = formData.get('gridSignName');
-        var gridAlignName = formData.get('gridAlignName');
-
-        gridSignName = Ext.isEmpty(gridSignName) ? 'aa.bb.view.list' :gridSignName;
-        gridAlignName = Ext.isEmpty(gridAlignName) ? 'aaBbViewList' :gridAlignName;
-
+        var appSignName = formData.get('appSignName');
+        appSignName = Ext.isEmpty(appSignName) ? 'table' :appSignName;
 
         var columnArr = win.columnArr;
         columnArr.forEach(function(curData){
@@ -391,14 +387,15 @@ Ext.define('reflectDemo.controller.main', {
         var url = '../ext/grid';
         var params = {
             'columnMetaInfoDtoList':columnArr,
-            'gridSignName':gridSignName,
-            'gridAlignName':gridAlignName
+            'appSignName':appSignName
         };
+
+        var gridSignName = appSignName + ".view.main." + appSignName + "List";
+
         var context = btn.up('form');
-        me.requestAjax(url,params,context,function(result){
+        me.requestAjaxResponseText(url,params,context,function(result){
 
             if(!Ext.isEmpty(result)){
-
                 win.close();
 
                 eval(result);
@@ -494,7 +491,7 @@ Ext.define('reflectDemo.controller.main', {
             'containsDate':win.containsDate
         };
         var context = btn.up('window');
-        me.requestAjax(url,params,context,function(result){
+        me.requestAjaxResponseText(url,params,context,function(result){
             if(!Ext.isEmpty(result)){
                 win.close();
             }
@@ -559,7 +556,7 @@ Ext.define('reflectDemo.controller.main', {
             'modelSignName':modelSignName
         };
         var context = btn.up('window');
-        me.requestAjax(url,params,context,function(result){
+        me.requestAjaxResponseText(url,params,context,function(result){
             me.showScriptStr('Model',result);
         },btn);
     },
@@ -608,7 +605,7 @@ Ext.define('reflectDemo.controller.main', {
             'tableName':tableName
         };
 
-        me.requestAjax(url,params,form,function(result){
+        me.requestAjaxResponseText(url,params,form,function(result){
             me.showScriptStr(title,result);
         },btn);
     },
@@ -896,7 +893,36 @@ Ext.define('reflectDemo.controller.main', {
                 }
             }
         });
+    },
+    requestAjaxResponseText:function(url,params,context,callback,btn){
+        var me = this;
 
+        Ext.Ajax.request({
+            url:url,
+            method:'POST',
+            jsonData:params,
+            timeout:5000,
+            success: function(response,options){
+                if(!Ext.isEmpty(callback)){
+                    callback.apply(context,[response.responseText]);
+                }
+
+            },
+            failure: function(response,options){
+                var result = response.responseText;
+                Ext.Msg.hide();
+                if(!Ext.isEmpty(btn)){
+                    btn.setDisabled(false);
+                }
+
+                if (Ext.isEmpty(result)) {
+                    me.showErrorMsg('请求超时');
+                } else {
+                    var message = response.message;
+                    me.showErrorMsg(message);
+                }
+            }
+        });
     },
     dealRemark:function(curRemark){
         var realRemark = curRemark.indexOf('\n') == -1 ? curRemark : curRemark.substring(0,curRemark.indexOf('\n'));

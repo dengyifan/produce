@@ -1,4 +1,4 @@
-Ext.define("${appSignName}.view.main.${searchSignName}", {
+Ext.define("${appSignName}.view.main.${searchAlignName}", {
     extend : "Ext.form.Panel",
     alias : 'widget.${searchAlignName}',
     width : '100%',

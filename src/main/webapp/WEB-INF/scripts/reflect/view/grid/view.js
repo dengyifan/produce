@@ -31,13 +31,10 @@ Ext.define("reflectDemo.view.grid.view", {
                     },
                     items : [
                         {
-                            fieldLabel : '签名',
-                            name : 'gridSignName',
-                            emptyText:'完整签名'
-                        },{
-                            fieldLabel : '别名',
-                            name : 'gridAlignName',
-                            emptyText:'别名'
+                            fieldLabel : '应用名',
+                            name : 'appSignName',
+                            emptyText:'应用名',
+                            value: 'table'
                         }
                     ]
                 },

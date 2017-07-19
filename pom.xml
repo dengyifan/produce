@@ -21,10 +21,20 @@
     <guavaVersion>21.0</guavaVersion>
     <commonsLangVersion>3.4</commonsLangVersion>
     <freemarkerVersion>2.3.23</freemarkerVersion>
+    <druidVersion>1.0.29</druidVersion>
   </properties>
 
 
   <dependencies>
+
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid</artifactId>
+      <version>${druidVersion}</version>
+    </dependency>
+
+
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

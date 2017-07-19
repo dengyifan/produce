@@ -1,5 +1,10 @@
 package com.yifan.demo.reflect.controller;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.util.JdbcConstants;
 import com.google.common.io.Files;
 import com.yifan.demo.base.config.Response;
 import com.yifan.demo.common.CompactAlgorithm;
@@ -179,6 +184,42 @@ public class ExtReflectController {
         resp.setResult(vo);
         return resp;
     }
+
+
+    @RequestMapping(value = "/sqlParse",method = RequestMethod.POST)
+    @ResponseBody
+    public Response sqlParse(@RequestBody ColumnMetaInfoVo vo){
+
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(vo.getSqlCnt(), JdbcConstants.MYSQL);
+        
+        //解析出的独立语句的个数
+        System.out.println("size is:" + stmtList.size());
+        
+        for (int i = 0; i < stmtList.size(); i++) {
+
+            SQLStatement stmt = stmtList.get(i);
+            MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+            stmt.accept(visitor);
+             
+            //获取字段名称
+            Collection<TableStat.Column> columns = visitor.getColumns();
+            //System.out.println("fields : " + columns);
+
+            for (TableStat.Column column : columns) {
+                String curTable = column.getTable();
+                String curFieldName = column.getName();
+                String curDataType = column.getDataType();
+
+                System.out.println(curTable + " " + curFieldName + " " + curDataType);
+            }
+        }
+
+        Response resp = new Response();
+        resp.setResult(vo);
+        return resp;
+    }
+
+
 
     private void extFormList2Map(ColumnMetaInfoVo vo) {
         List<ExtFormFieldDto> extFormFieldDtoList = vo.getExtFormFieldDtoList();

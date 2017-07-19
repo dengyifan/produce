@@ -40,6 +40,7 @@ Ext.define("reflectDemo.view.main.List", {
                 {xtype:'button',text:'InsertSql',action:'insertSql'},
                 {xtype:'button',text:'UpdateSql',action:'updateSql'},
                 {xtype:'button',text:'OneStep',action:'oneStep'},
+                {xtype:'button',text:'sqlParse',action:'sqlParse'},
                 {xtype:'button',text:'说明',action:'introduce'}
             ]
         }

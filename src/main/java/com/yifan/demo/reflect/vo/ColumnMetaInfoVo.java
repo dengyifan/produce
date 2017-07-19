@@ -76,6 +76,9 @@ public class ColumnMetaInfoVo implements Serializable {
     private String downloadFilePath;
     private String downloadFileName;
 
+    //填写的 sql 语句
+    private String sqlCnt;
+
 
     public ColumnMetaInfoDto getColumnMetaInfoDto() {
         return columnMetaInfoDto;
@@ -276,5 +279,13 @@ public class ColumnMetaInfoVo implements Serializable {
 
     public void setDefaultGridName(String defaultGridName) {
         this.defaultGridName = defaultGridName;
+    }
+
+    public String getSqlCnt() {
+        return sqlCnt;
+    }
+
+    public void setSqlCnt(String sqlCnt) {
+        this.sqlCnt = sqlCnt;
     }
 }

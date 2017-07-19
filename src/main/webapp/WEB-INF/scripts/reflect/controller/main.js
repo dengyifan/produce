@@ -75,6 +75,12 @@ Ext.define('reflectDemo.controller.main', {
             },
             'reflectDemoOneStepFirst button[action = toSecond]':{
                 click: this.toSecond
+            },
+            'reflectDemoGrid button[action = sqlParse]':{
+                click: this.sqlParse
+            },
+            'reflectDemoCommonWin button[action = sqlParseNext]':{
+                click: this.sqlParseNext
             }
 
         });
@@ -1023,4 +1029,32 @@ Ext.define('reflectDemo.controller.main', {
         var form = btn.up('grid').up().down('form');
         return form;
     },
+    sqlParse:function(){
+        var tmpWin = Ext.create('reflectDemo.view.common.window',{
+            title:'填写SQL',
+            buttons : [{
+                text : '下一步',
+                action : 'sqlParseNext'
+            }]
+        });
+
+        tmpWin.show();
+    },
+    sqlParseNext:function(btn){
+        var me = this;
+
+        var win = btn.up('window');
+
+        var sqlCntObj = win.down('form').getForm().findField('sqlCnt');
+        var sqlCnt = sqlCntObj.getValue();
+
+        var params = {
+            sqlCnt:sqlCnt
+        };
+
+        var url = '../ext/sqlParse';
+        me.requestAjax(url,params,win,function(result){
+            console.log(result);
+        },btn);
+    }
 });

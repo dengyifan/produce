@@ -5,7 +5,8 @@ Ext.define('${appSignName}.controller.${defaultControllerName}', {
     views: [
         'Viewport',
         'main.${searchAlignName}',
-        'main.${gridAlignName}'
+        'main.${gridAlignName}',
+        'main.${appSignName}AddModify'
     ],
     init: function () {
         this.control({
@@ -26,6 +27,12 @@ Ext.define('${appSignName}.controller.${defaultControllerName}', {
             },
             '${gridAlignName} button[action = export]': {
                 click: this.export${appSignName?cap_first}
+            },
+            '${appSignName}AddModify button[action = reset]':{
+                click:this.addModifyWinReset
+            },
+            '${appSignName}AddModify button[action = submit]':{
+                click:this.addModifyWinSubmit
             }
         });
     },
@@ -53,5 +60,11 @@ Ext.define('${appSignName}.controller.${defaultControllerName}', {
     },
     export${appSignName?cap_first}:function(btn){
        console.log('export...');
+    },
+    addModifyWinReset:function(btn){
+        console.log('addModifyWinReset');
+    },
+    addModifyWinSubmit:function(btn){
+        console.log('addModifyWinSubmit');
     }
 });

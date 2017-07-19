@@ -251,6 +251,9 @@ public class ExtReflectController {
         String viewPortCnt = ftlParse(configurer, "reflect/ext/viewport.ftl", vo);
         String searchCnt = ftlParse(configurer,"reflect/ext/search.ftl",vo);
         String listCnt = ftlParse(configurer,"reflect/ext/grid.ftl",vo);
+
+        String addModifyCnt = ftlParse(configurer,"reflect/ext/addmodify.ftl",vo);
+
         String modelCnt = ftlParse(configurer,"reflect/ext/model.ftl",vo);
         String storeCnt = ftlParse(configurer,"reflect/ext/store.ftl",vo);
         String controllerCnt = ftlParse(configurer,"reflect/ext/controller.ftl",vo);
@@ -321,11 +324,19 @@ public class ExtReflectController {
         createFile(listPath);
 
 
+        //webapp/tmp/extFtl/appSginName/view/main/*AddModify.js
+        String addModifyWinPath = viewMainDirPath + File.separator + vo.getAppSignName() + "AddModify.js";
+        createFile(addModifyWinPath);
+
+
         try {
             Files.write(appCnt.getBytes(),new File(appPath));
             Files.write(viewPortCnt.getBytes(),new File(viewportPath));
             Files.write(searchCnt.getBytes(),new File(searchPath));
             Files.write(listCnt.getBytes(),new File(listPath));
+
+            Files.write(addModifyCnt.getBytes(),new File(addModifyWinPath));
+
 
             Files.write(controllerCnt.getBytes(),new File(controllerMainPath));
             Files.write(modelCnt.getBytes(),new File(modelMainPath));

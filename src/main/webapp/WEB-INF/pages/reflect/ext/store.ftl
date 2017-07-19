@@ -20,23 +20,13 @@ Ext.define("${appSignName}.store.${defaultStoreName}", {
         'beforeload' : function(store, operation, eOpts) {
             var queryForm = store.queryForm.getForm();
 
-            var tableName = queryForm.findField('tableName').getValue();
-            var dtoSignName = queryForm.findField('dtoSignName').getValue();
-
-            if(Ext.isEmpty(tableName) && Ext.isEmpty(dtoSignName) ){
-
-               Ext.Msg.show({
-                   title:'提示',
-                   msg:'请输入表名或Dto签名后，再查询'
-               });
-
-                return;
-            }
+            var formData = Ext.create('Ext.data.Model',queryForm.getForm().getValues());
 
             if (!Ext.isEmpty(queryForm)) {
                 var params = {   //封装请求参数
-                    'tableName' : tableName,
-                    'dtoSignName' : dtoSignName,
+                    <#list columnMetaInfoDtoList as meta>
+                    '${meta.columnName}':formData.get('${meta.columnName}')<#if !meta?is_last>,</#if>//${meta.remark}
+                    </#list>
                 };
                 Ext.apply(store.proxy.extraParams, params);
             }

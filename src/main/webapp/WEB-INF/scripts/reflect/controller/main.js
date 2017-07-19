@@ -301,7 +301,7 @@ Ext.define('reflectDemo.controller.main', {
 
         for(var key in columnMeta){
             if(!Ext.isEmpty(columnNameRemarkMap[key])){
-                str += me.dealPreSubfix(1,"'"+ attrPrefix + key +"':" + "formData.get('"+key+"')," + columnNameRemarkMap[key]);
+                str += me.dealPreSubfix(1,"'"+ attrPrefix + key +"':" + "formData.get('"+key+"'), //" + columnNameRemarkMap[key]);
             }
         }
 

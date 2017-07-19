@@ -68,10 +68,14 @@ public class ExtReflectController {
     @ResponseBody
     public Response metaInfo(@ModelAttribute("vo") ColumnMetaInfoVo vo){
 
-        if(vo.getTableName() == null || "".equals(vo.getTableName())){
+        if(vo.getDtoSignName() != null && !"".equals(vo.getDtoSignName())){
             vo.setColumnMetaInfoDtoList(metaInfoService.getClassInfo(vo.getDtoSignName()));
-        } else {
+
+        } else if(vo.getTableName() != null && !vo.getTableName().equals("")){
             vo.setColumnMetaInfoDtoList(metaInfoService.getMetaInfo(vo.getTableName()));
+
+        } else {
+            vo.setColumnMetaInfoDtoList(metaInfoService.getColumnInfoFromSql(vo.getSqlCnt()));
         }
 
         vo.setTotalCount(vo.getColumnMetaInfoDtoList().size());
@@ -79,6 +83,15 @@ public class ExtReflectController {
         Response response = new Response();
         response.setResult(vo);
         return response;
+    }
+
+    @RequestMapping(value = "/sqlParse",method = RequestMethod.POST)
+    @ResponseBody
+    public Response sqlParse(@RequestBody ColumnMetaInfoVo vo){
+        vo.setColumnMetaInfoDtoList(metaInfoService.getColumnInfoFromSql(vo.getSqlCnt()));
+        Response resp = new Response();
+        resp.setResult(vo);
+        return resp;
     }
 
     @RequestMapping(value = "/dto",method = RequestMethod.POST)
@@ -185,39 +198,6 @@ public class ExtReflectController {
         return resp;
     }
 
-
-    @RequestMapping(value = "/sqlParse",method = RequestMethod.POST)
-    @ResponseBody
-    public Response sqlParse(@RequestBody ColumnMetaInfoVo vo){
-
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(vo.getSqlCnt(), JdbcConstants.MYSQL);
-        
-        //解析出的独立语句的个数
-        System.out.println("size is:" + stmtList.size());
-        
-        for (int i = 0; i < stmtList.size(); i++) {
-
-            SQLStatement stmt = stmtList.get(i);
-            MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
-            stmt.accept(visitor);
-             
-            //获取字段名称
-            Collection<TableStat.Column> columns = visitor.getColumns();
-            //System.out.println("fields : " + columns);
-
-            for (TableStat.Column column : columns) {
-                String curTable = column.getTable();
-                String curFieldName = column.getName();
-                String curDataType = column.getDataType();
-
-                System.out.println(curTable + " " + curFieldName + " " + curDataType);
-            }
-        }
-
-        Response resp = new Response();
-        resp.setResult(vo);
-        return resp;
-    }
 
 
 

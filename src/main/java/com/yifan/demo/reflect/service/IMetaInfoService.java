@@ -16,4 +16,13 @@ public interface IMetaInfoService {
 
     public String ftlParse(String viewName, ColumnMetaInfoVo vo);
 
+    public List<ColumnMetaInfoDto> queryMetaInfo(String tableName);
+
+    /**
+     * 根据一个 select sql 返回其查询的字段的信息集合
+     * @param sqlCnt
+     * @return
+     */
+    public List<ColumnMetaInfoDto> getColumnInfoFromSql(String sqlCnt);
+
 }

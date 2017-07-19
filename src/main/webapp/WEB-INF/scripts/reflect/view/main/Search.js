@@ -6,7 +6,7 @@ Ext.define("reflectDemo.view.main.Search", {
     alias : 'widget.reflectDemoSearch',
     region : 'north',
     title:'查询',
-    height:120,
+    height:200,
     fieldDefaults: {
         labelWidth: 80,
         margin: '8 5 5 5',
@@ -27,6 +27,9 @@ Ext.define("reflectDemo.view.main.Search", {
                 },{
                     fieldLabel : 'Dto签名',
                     name : 'dtoSignName'
+                },{
+                    fieldLabel : 'select SQL',
+                    name: 'sqlCnt'
                 }
             ],
             buttons : [{

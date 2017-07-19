@@ -18,7 +18,7 @@ Ext.define("${appSignName}.store.${defaultStoreName}", {
     },
     listeners : {
         'beforeload' : function(store, operation, eOpts) {
-            var queryForm = store.queryForm.getForm();
+            var queryForm = store.queryForm;
 
             var formData = Ext.create('Ext.data.Model',queryForm.getForm().getValues());
 

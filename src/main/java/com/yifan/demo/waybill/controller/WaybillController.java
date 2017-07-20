@@ -40,6 +40,14 @@ public class WaybillController {
         return response;
     }
 
+    @RequestMapping(value = "/remove",method = RequestMethod.POST)
+    @ResponseBody
+    public Response remove(@RequestBody  StudentVO vo){
+        Response response = new Response();
+        waybillService.remove(vo.getStudentDtoList());
+        return response;
+    }
+
     public StudentVO getStudentVO() {
         return studentVO;
     }

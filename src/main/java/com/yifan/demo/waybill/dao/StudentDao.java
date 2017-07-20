@@ -1,6 +1,7 @@
 package com.yifan.demo.waybill.dao;
 
 import com.yifan.demo.waybill.dto.StudentDto;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -18,4 +19,7 @@ public interface StudentDao {
 
     @Insert("insert into t_demo_student(name,gender,age,address,birthday) values (#{name},#{gender},#{age},#{address},#{birthday})")
     public int insert(StudentDto dto);
+
+    @Delete("delete from t_demo_student where id = #{id}")
+    int remove(StudentDto dto);
 }

@@ -28,4 +28,9 @@ public class WaybillService implements IWaybillService {
     public int insert(StudentDto dto) {
         return studentDao.insert(dto);
     }
+
+    @Override
+    public int remove(List<StudentDto> studentDtoList) {
+        return studentDao.remove(studentDtoList.get(0));
+    }
 }

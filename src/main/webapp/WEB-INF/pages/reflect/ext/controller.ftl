@@ -105,7 +105,7 @@ Ext.define('${appSignName}.controller.${defaultControllerName}', {
 
         //todo 加遮罩层 url 定义
 
-        me.requestAjax('../todo${appModuleName}/addOrUpdate',params,mainGrid,function(result){
+        me.requestAjax('../todo${appModuleName}/remove',params,mainGrid,function(result){
             btn.setDisabled(false);
 
             //todo 去遮罩层

@@ -71,7 +71,8 @@ Ext.define('${appSignName}.controller.${defaultControllerName}', {
         var updateWin = Ext.create('${appSignName}.view.main.${appSignName}AddModify');
 
         //对于能直接填充到数据 直接填充
-        updateWin.down('form').loadRecord(selectArr[0]);
+        //注意对于 comb 字段 一定要先数据 即 store 不然用 loadRecord 会报 Model is not a constructor
+        updateWin.down('form').loadRecord(selections[0]);
 
         //todo 对于类似下拉框的 请使用类似 driverObj.setCombValue(driverName,driverCode);
 

@@ -25,7 +25,7 @@ Ext.define("${appSignName}.store.${defaultStoreName}", {
             if (!Ext.isEmpty(queryForm)) {
                 var params = {   //封装请求参数
                     <#list columnMetaInfoDtoList as meta>
-                    '${meta.columnName}':formData.get('${meta.columnName}')<#if !meta?is_last>,</#if>//${meta.remark}
+                    '${appSignName}Dto.${meta.columnName}':formData.get('${meta.columnName}')<#if !meta?is_last>,</#if>//${meta.remark}
                     </#list>
                 };
                 Ext.apply(store.proxy.extraParams, params);

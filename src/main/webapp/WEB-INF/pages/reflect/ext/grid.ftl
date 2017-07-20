@@ -38,10 +38,10 @@ Ext.define('${appSignName}.view.main.${defaultGridName}', {
             dock:'top',
             items:[
                 '->',
-                {xtype:'button',text:'新增',action:'add'},
-                {xtype:'button',text:'修改',action:'modify'},
-                {xtype:'button',text:'删除',action:'remove'},
-                {xtype:'button',text:'导出',action:'export'}
+                {xtype:'addbutton',text:'新增',action:'add'},
+                {xtype:'updatebutton',text:'修改',action:'modify'},
+                {xtype:'deletebutton',text:'删除',action:'remove'},
+                {xtype:'exportbutton',text:'导出',action:'export'}
             ]
         }
     ],

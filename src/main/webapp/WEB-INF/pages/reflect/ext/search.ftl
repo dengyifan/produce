@@ -42,11 +42,11 @@ Ext.define("${appSignName}.view.main.${searchAlignName}", {
 
     ],
     buttons : [{
-        xtype:'button',
+        xtype:'searchbutton',
         text: '查询',
         action: 'mainQuery'
     },{
-        xtype:'button',
+        xtype:'refreshbutton',
         text: '重置',
         action: 'reset'
     }]

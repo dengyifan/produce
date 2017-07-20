@@ -58,10 +58,61 @@ Ext.define('${appSignName}.controller.${defaultControllerName}', {
     modify${appSignName?cap_first}:function(btn){
         console.log('modify...');
         var me = this;
+        var mainGrid = btn.up('grid');
+
+        //获取选择的记录
+        var selections = mainGrid.getSelectionModel().getSelection();
+
+        if(selections.length == 0){
+            me.showErrorMsg('请选择记录后再操作');
+            return;
+        }
+
+        var updateWin = Ext.create('${appSignName}.view.main.${appSignName}AddModify');
+
+        //对于能直接填充到数据 直接填充
+        updateWin.down('form').loadRecord(selectArr[0]);
+
+        //todo 对于类似下拉框的 请使用类似 driverObj.setCombValue(driverName,driverCode);
+
+        updateWin.show();
     },
     remove${appSignName?cap_first}:function(btn){
         console.log('remove...');
         var me = this;
+        var mainGrid = btn.up('grid');
+
+        //获取选择的记录
+        var selections = mainGrid.getSelectionModel().getSelection();
+        if(selections.length == 0){
+            me.showErrorMsg('请选择记录后再操作');
+            return;
+        }
+
+        var removeList = [];
+        for (var i = 0, len = selections.length; i < len; i++) {
+            //此处的 data 为 grid 里一行的数据  对应后台的 dto
+            removeList.push(selections[i].data);
+        }
+        var params = {
+            'todoAttrRemoveList': removeList
+        };
+
+        console.log(params);
+
+        btn.setDisabled(true);
+
+        //todo 加遮罩层 url 定义
+
+        me.requestAjax('../todo${appModuleName}/addOrUpdate',params,mainGrid,function(result){
+            btn.setDisabled(false);
+
+            //todo 去遮罩层
+            //todo 提示操作成功消息
+
+            //删除成功后 重新刷新表格
+            mainGrid.getStore().reload();
+        },btn);
     },
     export${appSignName?cap_first}:function(btn){
        console.log('export...');
@@ -95,7 +146,7 @@ Ext.define('${appSignName}.controller.${defaultControllerName}', {
             btn.setDisabled(true);
 
             //todo 加遮罩层 url 定义
-            me.requestAjax('../${appModuleName}/addOrUpdate',params,btn.up('window'),function(result){
+            me.requestAjax('../todo${appModuleName}/addOrUpdate',params,btn.up('window'),function(result){
                 btn.setDisabled(false);
 
                 //todo 去遮罩层

@@ -11,4 +11,6 @@ import java.util.List;
 public interface IWaybillService {
 
     public List<StudentDto> mainQuery(StudentVO vo);
+
+    public int insert(StudentDto dto);
 }

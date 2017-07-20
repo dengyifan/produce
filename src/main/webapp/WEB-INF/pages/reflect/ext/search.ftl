@@ -31,7 +31,7 @@ Ext.define("${appSignName}.view.main.${searchAlignName}", {
                 {
                     fieldLabel : '${field.fieldLabel}',
                     name : '${field.name}',
-                    xtype : '${field.xtype}'
+                    xtype : '${field.xtype}'<#if field.xtype == 'datefield'>,format : 'Y-m-d'</#if>
                 }<#if !field?is_last>,</#if>
             </#list>
         ]

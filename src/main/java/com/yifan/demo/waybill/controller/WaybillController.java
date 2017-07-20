@@ -32,6 +32,14 @@ public class WaybillController {
         return response;
     }
 
+    @RequestMapping(value = "/addOrUpdate",method = RequestMethod.POST)
+    @ResponseBody
+    public Response addOrUpdate(@RequestBody  StudentVO vo){
+        Response response = new Response();
+        waybillService.insert(vo.getStudentDto());
+        return response;
+    }
+
     public StudentVO getStudentVO() {
         return studentVO;
     }

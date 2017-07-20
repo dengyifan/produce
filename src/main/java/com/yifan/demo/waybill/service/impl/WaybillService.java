@@ -23,4 +23,9 @@ public class WaybillService implements IWaybillService {
         List<StudentDto> studentDtoList = studentDao.mainQuery();
         return studentDtoList;
     }
+
+    @Override
+    public int insert(StudentDto dto) {
+        return studentDao.insert(dto);
+    }
 }
